@@ -11,7 +11,7 @@ const UpvoteSchema = z.object ({
 export async function POST(req: NextRequest){
     const session = await getServerSession();
 
-    const user = await prismaClient.user.findfirst({
+    const user = await prismaClient.user.findFirst({
     where: {
         email: session?.user?.email ??  ""
         }
@@ -28,8 +28,12 @@ export async function POST(req: NextRequest){
         const data = UpvoteSchema.parse(await req.json()) 
         await prismaClient.upvote.delete({
             where : {
+                userId_streamId: {
+
                 userId : user.id,
                 streamId: data.streamId
+                }
+
             }
         })
     } catch (e) {
