@@ -6,7 +6,6 @@ export default function Home() {
         <div>Hello world</div>
         <div>my name is raj maish sahu</div>
       </div>
-
     </div>
   );
 }
