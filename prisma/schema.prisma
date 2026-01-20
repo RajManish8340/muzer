@@ -19,6 +19,7 @@ model User {
   email String @unique
 
   rooms Room[]
+  songs Song[]
 }
 
 model Room {
@@ -42,12 +43,16 @@ model Playlist {
 }
 
 model Song {
-  id    Int     @id @default(autoincrement())
-  title String
-  url   String?
+  id        Int     @id @default(autoincrement())
+  title     String
+  url       String?
+  upvotes   Int     @default(0)
+  downvotes Int     @default(0)
 
-  playlistId Int
-  playlist   Playlist @relation(fields: [playlistId], references: [id])
+  createdById Int
+  playlistId  Int
+  createdBy   User     @relation(fields: [createdById], references: [id])
+  playlist    Playlist @relation(fields: [playlistId], references: [id])
 }
 
 // enum Role {
