@@ -6,9 +6,94 @@
 
 generator client {
   provider = "prisma-client"
-  output   = "../app/generated/prisma"
+  output   = "../generated/prisma"
 }
 
 datasource db {
   provider = "postgresql"
+}
+
+enum Role {
+  normal
+  admin
+}
+
+model User {
+  id    Int    @id @default(autoincrement())
+  name  String
+  email String @unique
+  role  Role   @default(normal)
+
+  roomsAdmin  Room[]             @relation("RoomAdmin")
+  roomMembers RoomMember[]
+  playlists   PlaylistSong[]
+  roomSongs   RoomPlaylistSong[]
+}
+
+model Room {
+  id             Int     @id @default(autoincrement())
+  name           String
+  adminId        Int
+  playlistId     Int?
+  currentPlaying String?
+
+  admin     User               @relation("RoomAdmin", fields: [adminId], references: [id])
+  playlist  Playlist?          @relation(fields: [playlistId], references: [id])
+  members   RoomMember[]
+  roomSongs RoomPlaylistSong[]
+}
+
+model RoomMember {
+  userId Int
+  roomId Int
+
+  user User @relation(fields: [userId], references: [id])
+  room Room @relation(fields: [roomId], references: [id])
+
+  @@id([roomId, userId])
+}
+
+model Song {
+  id    String  @id
+  title String?
+
+  playlistSongs PlaylistSong[]
+  roomSongs     RoomPlaylistSong[]
+}
+
+model Playlist {
+  id   Int    @id @default(autoincrement())
+  name String @default("My Playlist")
+
+  rooms     Room[]
+  songs     PlaylistSong[]
+  roomSongs RoomPlaylistSong[]
+}
+
+model PlaylistSong {
+  playlistId Int
+  songId     String
+  createdBy  Int
+
+  playlist Playlist @relation(fields: [playlistId], references: [id])
+  song     Song     @relation(fields: [songId], references: [id])
+  user     User     @relation(fields: [createdBy], references: [id])
+
+  @@id([playlistId, songId, createdBy])
+}
+
+model RoomPlaylistSong {
+  roomId     Int
+  playlistId Int
+  songId     String
+  addedBy    Int
+  downvotes  Int    @default(0)
+  upvotes    Int    @default(0)
+
+  room     Room     @relation(fields: [roomId], references: [id])
+  playlist Playlist @relation(fields: [playlistId], references: [id])
+  song     Song     @relation(fields: [songId], references: [id])
+  user     User     @relation(fields: [addedBy], references: [id])
+
+  @@id([playlistId, songId, roomId])
 }
