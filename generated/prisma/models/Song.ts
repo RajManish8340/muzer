@@ -30,7 +30,6 @@ export type SongAvgAggregateOutputType = {
   id: number | null
   upvotes: number | null
   downvotes: number | null
-  createdById: number | null
   playlistId: number | null
 }
 
@@ -38,7 +37,6 @@ export type SongSumAggregateOutputType = {
   id: number | null
   upvotes: number | null
   downvotes: number | null
-  createdById: number | null
   playlistId: number | null
 }
 
@@ -48,7 +46,7 @@ export type SongMinAggregateOutputType = {
   url: string | null
   upvotes: number | null
   downvotes: number | null
-  createdById: number | null
+  createdById: string | null
   playlistId: number | null
 }
 
@@ -58,7 +56,7 @@ export type SongMaxAggregateOutputType = {
   url: string | null
   upvotes: number | null
   downvotes: number | null
-  createdById: number | null
+  createdById: string | null
   playlistId: number | null
 }
 
@@ -78,7 +76,6 @@ export type SongAvgAggregateInputType = {
   id?: true
   upvotes?: true
   downvotes?: true
-  createdById?: true
   playlistId?: true
 }
 
@@ -86,7 +83,6 @@ export type SongSumAggregateInputType = {
   id?: true
   upvotes?: true
   downvotes?: true
-  createdById?: true
   playlistId?: true
 }
 
@@ -213,7 +209,7 @@ export type SongGroupByOutputType = {
   url: string | null
   upvotes: number
   downvotes: number
-  createdById: number
+  createdById: string
   playlistId: number
   _count: SongCountAggregateOutputType | null
   _avg: SongAvgAggregateOutputType | null
@@ -246,7 +242,7 @@ export type SongWhereInput = {
   url?: Prisma.StringNullableFilter<"Song"> | string | null
   upvotes?: Prisma.IntFilter<"Song"> | number
   downvotes?: Prisma.IntFilter<"Song"> | number
-  createdById?: Prisma.IntFilter<"Song"> | number
+  createdById?: Prisma.StringFilter<"Song"> | string
   playlistId?: Prisma.IntFilter<"Song"> | number
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>
@@ -273,7 +269,7 @@ export type SongWhereUniqueInput = Prisma.AtLeast<{
   url?: Prisma.StringNullableFilter<"Song"> | string | null
   upvotes?: Prisma.IntFilter<"Song"> | number
   downvotes?: Prisma.IntFilter<"Song"> | number
-  createdById?: Prisma.IntFilter<"Song"> | number
+  createdById?: Prisma.StringFilter<"Song"> | string
   playlistId?: Prisma.IntFilter<"Song"> | number
   createdBy?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistScalarRelationFilter, Prisma.PlaylistWhereInput>
@@ -303,7 +299,7 @@ export type SongScalarWhereWithAggregatesInput = {
   url?: Prisma.StringNullableWithAggregatesFilter<"Song"> | string | null
   upvotes?: Prisma.IntWithAggregatesFilter<"Song"> | number
   downvotes?: Prisma.IntWithAggregatesFilter<"Song"> | number
-  createdById?: Prisma.IntWithAggregatesFilter<"Song"> | number
+  createdById?: Prisma.StringWithAggregatesFilter<"Song"> | string
   playlistId?: Prisma.IntWithAggregatesFilter<"Song"> | number
 }
 
@@ -322,7 +318,7 @@ export type SongUncheckedCreateInput = {
   url?: string | null
   upvotes?: number
   downvotes?: number
-  createdById: number
+  createdById: string
   playlistId: number
 }
 
@@ -341,7 +337,7 @@ export type SongUncheckedUpdateInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upvotes?: Prisma.IntFieldUpdateOperationsInput | number
   downvotes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   playlistId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -351,7 +347,7 @@ export type SongCreateManyInput = {
   url?: string | null
   upvotes?: number
   downvotes?: number
-  createdById: number
+  createdById: string
   playlistId: number
 }
 
@@ -368,7 +364,7 @@ export type SongUncheckedUpdateManyInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upvotes?: Prisma.IntFieldUpdateOperationsInput | number
   downvotes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
   playlistId?: Prisma.IntFieldUpdateOperationsInput | number
 }
 
@@ -396,7 +392,6 @@ export type SongAvgOrderByAggregateInput = {
   id?: Prisma.SortOrder
   upvotes?: Prisma.SortOrder
   downvotes?: Prisma.SortOrder
-  createdById?: Prisma.SortOrder
   playlistId?: Prisma.SortOrder
 }
 
@@ -424,7 +419,6 @@ export type SongSumOrderByAggregateInput = {
   id?: Prisma.SortOrder
   upvotes?: Prisma.SortOrder
   downvotes?: Prisma.SortOrder
-  createdById?: Prisma.SortOrder
   playlistId?: Prisma.SortOrder
 }
 
@@ -512,10 +506,6 @@ export type SongUncheckedUpdateManyWithoutPlaylistNestedInput = {
   deleteMany?: Prisma.SongScalarWhereInput | Prisma.SongScalarWhereInput[]
 }
 
-export type NullableStringFieldUpdateOperationsInput = {
-  set?: string | null
-}
-
 export type SongCreateWithoutCreatedByInput = {
   title: string
   url?: string | null
@@ -568,7 +558,7 @@ export type SongScalarWhereInput = {
   url?: Prisma.StringNullableFilter<"Song"> | string | null
   upvotes?: Prisma.IntFilter<"Song"> | number
   downvotes?: Prisma.IntFilter<"Song"> | number
-  createdById?: Prisma.IntFilter<"Song"> | number
+  createdById?: Prisma.StringFilter<"Song"> | string
   playlistId?: Prisma.IntFilter<"Song"> | number
 }
 
@@ -586,7 +576,7 @@ export type SongUncheckedCreateWithoutPlaylistInput = {
   url?: string | null
   upvotes?: number
   downvotes?: number
-  createdById: number
+  createdById: string
 }
 
 export type SongCreateOrConnectWithoutPlaylistInput = {
@@ -656,7 +646,7 @@ export type SongCreateManyPlaylistInput = {
   url?: string | null
   upvotes?: number
   downvotes?: number
-  createdById: number
+  createdById: string
 }
 
 export type SongUpdateWithoutPlaylistInput = {
@@ -673,7 +663,7 @@ export type SongUncheckedUpdateWithoutPlaylistInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upvotes?: Prisma.IntFieldUpdateOperationsInput | number
   downvotes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type SongUncheckedUpdateManyWithoutPlaylistInput = {
@@ -682,7 +672,7 @@ export type SongUncheckedUpdateManyWithoutPlaylistInput = {
   url?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   upvotes?: Prisma.IntFieldUpdateOperationsInput | number
   downvotes?: Prisma.IntFieldUpdateOperationsInput | number
-  createdById?: Prisma.IntFieldUpdateOperationsInput | number
+  createdById?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 
@@ -759,7 +749,7 @@ export type $SongPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     url: string | null
     upvotes: number
     downvotes: number
-    createdById: number
+    createdById: string
     playlistId: number
   }, ExtArgs["result"]["song"]>
   composites: {}
@@ -1191,7 +1181,7 @@ export interface SongFieldRefs {
   readonly url: Prisma.FieldRef<"Song", 'String'>
   readonly upvotes: Prisma.FieldRef<"Song", 'Int'>
   readonly downvotes: Prisma.FieldRef<"Song", 'Int'>
-  readonly createdById: Prisma.FieldRef<"Song", 'Int'>
+  readonly createdById: Prisma.FieldRef<"Song", 'String'>
   readonly playlistId: Prisma.FieldRef<"Song", 'Int'>
 }
     

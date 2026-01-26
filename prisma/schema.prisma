@@ -14,20 +14,26 @@ datasource db {
 }
 
 model User {
-  id    Int    @id @default(autoincrement())
-  name  String
-  email String @unique
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime? @map("email_verified")
+  image         String?
+  accounts      Account[]
+  sessions      Session[]
 
   rooms Room[]
   songs Song[]
+
+  @@map("users")
 }
 
 model Room {
   id   Int    @id @default(autoincrement())
   name String
 
-  adminId Int
-  admin   User @relation(fields: [adminId], references: [id])
+  adminId String
+  admin   User   @relation(fields: [adminId], references: [id])
 
   playlist Playlist?
 }
@@ -49,93 +55,47 @@ model Song {
   upvotes   Int     @default(0)
   downvotes Int     @default(0)
 
-  createdById Int
+  createdById String
   playlistId  Int
   createdBy   User     @relation(fields: [createdById], references: [id])
   playlist    Playlist @relation(fields: [playlistId], references: [id])
 }
 
-// enum Role {
-//   normal
-//   admin
-// }
-//
-// model User {
-//   id    Int    @id @default(autoincrement())
-//   name  String
-//   email String @unique
-//   role  Role   @default(normal)
-//
-//   roomsAdmin  Room[]             @relation("RoomAdmin")
-//   roomMembers RoomMember[]
-//   playlists   PlaylistSong[]
-//   roomSongs   RoomPlaylistSong[]
-// }
-//
-// model Room {
-//   id             Int     @id @default(autoincrement())
-//   name           String
-//   adminId        Int
-//   playlistId     Int?
-//   currentPlaying String?
-//
-//   admin     User               @relation("RoomAdmin", fields: [adminId], references: [id])
-//   playlist  Playlist?          @relation(fields: [playlistId], references: [id])
-//   members   RoomMember[]
-//   roomSongs RoomPlaylistSong[]
-// }
-//
-// model RoomMember {
-//   userId Int
-//   roomId Int
-//
-//   user User @relation(fields: [userId], references: [id])
-//   room Room @relation(fields: [roomId], references: [id])
-//
-//   @@id([roomId, userId])
-// }
-//
-// model Song {
-//   id    String  @id
-//   title String?
-//
-//   playlistSongs PlaylistSong[]
-//   roomSongs     RoomPlaylistSong[]
-// }
-//
-// model Playlist {
-//   id   Int    @id @default(autoincrement())
-//   name String @default("My Playlist")
-//
-//   rooms     Room[]
-//   songs     PlaylistSong[]
-//   roomSongs RoomPlaylistSong[]
-// }
-//
-// model PlaylistSong {
-//   playlistId Int
-//   songId     String
-//   createdBy  Int
-//
-//   playlist Playlist @relation(fields: [playlistId], references: [id])
-//   song     Song     @relation(fields: [songId], references: [id])
-//   user     User     @relation(fields: [createdBy], references: [id])
-//
-//   @@id([playlistId, songId, createdBy])
-// }
-//
-// model RoomPlaylistSong {
-//   roomId     Int
-//   playlistId Int
-//   songId     String
-//   addedBy    Int
-//   downvotes  Int    @default(0)
-//   upvotes    Int    @default(0)
-//
-//   room     Room     @relation(fields: [roomId], references: [id])
-//   playlist Playlist @relation(fields: [playlistId], references: [id])
-//   song     Song     @relation(fields: [songId], references: [id])
-//   user     User     @relation(fields: [addedBy], references: [id])
-//
-//   @@id([playlistId, songId, roomId])
-// }
+model Account {
+  id                String  @id @default(cuid())
+  userId            String  @map("user_id")
+  type              String
+  provider          String
+  providerAccountId String  @map("provider_account_id")
+  refresh_token     String? @db.Text
+  access_token      String? @db.Text
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String? @db.Text
+  session_state     String?
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model Session {
+  id           String   @id @default(cuid())
+  sessionToken String   @unique @map("session_token")
+  userId       String   @map("user_id")
+  expires      DateTime
+  user         User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@map("sessions")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@unique([identifier, token])
+  @@map("verification_tokens")
+}

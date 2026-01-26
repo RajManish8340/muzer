@@ -1,13 +1,32 @@
-"use client"
+import { signIn, signOut } from "@/lib/auth"
 
-import { signIn, signOut, useSession } from "next-auth/react"
+export function SignIn({ provider }: { provider?: string }) {
+  return (
+    <form
+      action={async () => {
+        "use server"
+        await signIn(provider)
+      }}
+    >
+      <button className="bg-neutral-700 text-white p-2 rounded-md">
+        Sign In with {provider}
+      </button>
+    </form>
+  )
+}
 
-export default function AuthButton() {
-  const { data: session } = useSession()
-
-  if (!session) {
-    return <button onClick={() => signIn("google")} className="bg-blue-700 cursor-pointer p-3 " >Sign In</button>
-  }
-
-  return <button onClick={() => signOut()}>Sign Out</button>
+export function SignOut() {
+  return (
+    <form
+      action={async () => {
+        "use server"
+        await signOut()
+      }}
+      className="w-full"
+    >
+      <button className="bg-neutral-700 text-white p-2 rounded-md">
+        Sign Out
+      </button>
+    </form>
+  )
 }
