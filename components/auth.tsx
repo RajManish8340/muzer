@@ -8,8 +8,8 @@ export function SignIn({ provider }: { provider?: string }) {
         await signIn(provider)
       }}
     >
-      <button className="bg-neutral-700 text-white p-2 rounded-md">
-        Sign In with {provider}
+      <button className=" cursor-pointer bg-neutral-800 text-white p-2">
+        SigIn
       </button>
     </form>
   )
@@ -24,7 +24,7 @@ export function SignOut() {
       }}
       className="w-full"
     >
-      <button className="bg-neutral-700 text-white p-2 rounded-md">
+      <button className=" cursor-pointer bg-neutral-700 text-white p-2 rounded-md items-center content-center">
         Sign Out
       </button>
     </form>
