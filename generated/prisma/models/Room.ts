@@ -20,28 +20,18 @@ export type RoomModel = runtime.Types.Result.DefaultSelection<Prisma.$RoomPayloa
 
 export type AggregateRoom = {
   _count: RoomCountAggregateOutputType | null
-  _avg: RoomAvgAggregateOutputType | null
-  _sum: RoomSumAggregateOutputType | null
   _min: RoomMinAggregateOutputType | null
   _max: RoomMaxAggregateOutputType | null
 }
 
-export type RoomAvgAggregateOutputType = {
-  id: number | null
-}
-
-export type RoomSumAggregateOutputType = {
-  id: number | null
-}
-
 export type RoomMinAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   adminId: string | null
 }
 
 export type RoomMaxAggregateOutputType = {
-  id: number | null
+  id: string | null
   name: string | null
   adminId: string | null
 }
@@ -53,14 +43,6 @@ export type RoomCountAggregateOutputType = {
   _all: number
 }
 
-
-export type RoomAvgAggregateInputType = {
-  id?: true
-}
-
-export type RoomSumAggregateInputType = {
-  id?: true
-}
 
 export type RoomMinAggregateInputType = {
   id?: true
@@ -119,18 +101,6 @@ export type RoomAggregateArgs<ExtArgs extends runtime.Types.Extensions.InternalA
   /**
    * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
    * 
-   * Select which fields to average
-  **/
-  _avg?: RoomAvgAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
-   * Select which fields to sum
-  **/
-  _sum?: RoomSumAggregateInputType
-  /**
-   * {@link https://www.prisma.io/docs/concepts/components/prisma-client/aggregations Aggregation Docs}
-   * 
    * Select which fields to find the minimum value
   **/
   _min?: RoomMinAggregateInputType
@@ -161,19 +131,15 @@ export type RoomGroupByArgs<ExtArgs extends runtime.Types.Extensions.InternalArg
   take?: number
   skip?: number
   _count?: RoomCountAggregateInputType | true
-  _avg?: RoomAvgAggregateInputType
-  _sum?: RoomSumAggregateInputType
   _min?: RoomMinAggregateInputType
   _max?: RoomMaxAggregateInputType
 }
 
 export type RoomGroupByOutputType = {
-  id: number
+  id: string
   name: string
   adminId: string
   _count: RoomCountAggregateOutputType | null
-  _avg: RoomAvgAggregateOutputType | null
-  _sum: RoomSumAggregateOutputType | null
   _min: RoomMinAggregateOutputType | null
   _max: RoomMaxAggregateOutputType | null
 }
@@ -197,7 +163,7 @@ export type RoomWhereInput = {
   AND?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
   OR?: Prisma.RoomWhereInput[]
   NOT?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
-  id?: Prisma.IntFilter<"Room"> | number
+  id?: Prisma.StringFilter<"Room"> | string
   name?: Prisma.StringFilter<"Room"> | string
   adminId?: Prisma.StringFilter<"Room"> | string
   admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
@@ -213,7 +179,7 @@ export type RoomOrderByWithRelationInput = {
 }
 
 export type RoomWhereUniqueInput = Prisma.AtLeast<{
-  id?: number
+  id?: string
   AND?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
   OR?: Prisma.RoomWhereInput[]
   NOT?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
@@ -228,59 +194,60 @@ export type RoomOrderByWithAggregationInput = {
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
   _count?: Prisma.RoomCountOrderByAggregateInput
-  _avg?: Prisma.RoomAvgOrderByAggregateInput
   _max?: Prisma.RoomMaxOrderByAggregateInput
   _min?: Prisma.RoomMinOrderByAggregateInput
-  _sum?: Prisma.RoomSumOrderByAggregateInput
 }
 
 export type RoomScalarWhereWithAggregatesInput = {
   AND?: Prisma.RoomScalarWhereWithAggregatesInput | Prisma.RoomScalarWhereWithAggregatesInput[]
   OR?: Prisma.RoomScalarWhereWithAggregatesInput[]
   NOT?: Prisma.RoomScalarWhereWithAggregatesInput | Prisma.RoomScalarWhereWithAggregatesInput[]
-  id?: Prisma.IntWithAggregatesFilter<"Room"> | number
+  id?: Prisma.StringWithAggregatesFilter<"Room"> | string
   name?: Prisma.StringWithAggregatesFilter<"Room"> | string
   adminId?: Prisma.StringWithAggregatesFilter<"Room"> | string
 }
 
 export type RoomCreateInput = {
+  id?: string
   name: string
   admin: Prisma.UserCreateNestedOneWithoutRoomsInput
   playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
 }
 
 export type RoomUncheckedCreateInput = {
-  id?: number
+  id?: string
   name: string
   adminId: string
   playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
 }
 
 export type RoomUpdateInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
   playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
   playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomCreateManyInput = {
-  id?: number
+  id?: string
   name: string
   adminId: string
 }
 
 export type RoomUpdateManyMutationInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RoomUncheckedUpdateManyInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
 }
@@ -301,10 +268,6 @@ export type RoomCountOrderByAggregateInput = {
   adminId?: Prisma.SortOrder
 }
 
-export type RoomAvgOrderByAggregateInput = {
-  id?: Prisma.SortOrder
-}
-
 export type RoomMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
@@ -315,10 +278,6 @@ export type RoomMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
-}
-
-export type RoomSumOrderByAggregateInput = {
-  id?: Prisma.SortOrder
 }
 
 export type RoomScalarRelationFilter = {
@@ -368,14 +327,6 @@ export type RoomUncheckedUpdateManyWithoutAdminNestedInput = {
   deleteMany?: Prisma.RoomScalarWhereInput | Prisma.RoomScalarWhereInput[]
 }
 
-export type IntFieldUpdateOperationsInput = {
-  set?: number
-  increment?: number
-  decrement?: number
-  multiply?: number
-  divide?: number
-}
-
 export type RoomCreateNestedOneWithoutPlaylistInput = {
   create?: Prisma.XOR<Prisma.RoomCreateWithoutPlaylistInput, Prisma.RoomUncheckedCreateWithoutPlaylistInput>
   connectOrCreate?: Prisma.RoomCreateOrConnectWithoutPlaylistInput
@@ -391,12 +342,13 @@ export type RoomUpdateOneRequiredWithoutPlaylistNestedInput = {
 }
 
 export type RoomCreateWithoutAdminInput = {
+  id?: string
   name: string
   playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutAdminInput = {
-  id?: number
+  id?: string
   name: string
   playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
 }
@@ -431,18 +383,19 @@ export type RoomScalarWhereInput = {
   AND?: Prisma.RoomScalarWhereInput | Prisma.RoomScalarWhereInput[]
   OR?: Prisma.RoomScalarWhereInput[]
   NOT?: Prisma.RoomScalarWhereInput | Prisma.RoomScalarWhereInput[]
-  id?: Prisma.IntFilter<"Room"> | number
+  id?: Prisma.StringFilter<"Room"> | string
   name?: Prisma.StringFilter<"Room"> | string
   adminId?: Prisma.StringFilter<"Room"> | string
 }
 
 export type RoomCreateWithoutPlaylistInput = {
+  id?: string
   name: string
   admin: Prisma.UserCreateNestedOneWithoutRoomsInput
 }
 
 export type RoomUncheckedCreateWithoutPlaylistInput = {
-  id?: number
+  id?: string
   name: string
   adminId: string
 }
@@ -464,34 +417,36 @@ export type RoomUpdateToOneWithWhereWithoutPlaylistInput = {
 }
 
 export type RoomUpdateWithoutPlaylistInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutPlaylistInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
 export type RoomCreateManyAdminInput = {
-  id?: number
+  id?: string
   name: string
 }
 
 export type RoomUpdateWithoutAdminInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutAdminInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateManyWithoutAdminInput = {
-  id?: Prisma.IntFieldUpdateOperationsInput | number
+  id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
 }
 
@@ -544,7 +499,7 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     playlist: Prisma.$PlaylistPayload<ExtArgs> | null
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
-    id: number
+    id: string
     name: string
     adminId: string
   }, ExtArgs["result"]["room"]>
@@ -972,7 +927,7 @@ export interface Prisma__RoomClient<T, Null = never, ExtArgs extends runtime.Typ
  * Fields of the Room model
  */
 export interface RoomFieldRefs {
-  readonly id: Prisma.FieldRef<"Room", 'Int'>
+  readonly id: Prisma.FieldRef<"Room", 'String'>
   readonly name: Prisma.FieldRef<"Room", 'String'>
   readonly adminId: Prisma.FieldRef<"Room", 'String'>
 }

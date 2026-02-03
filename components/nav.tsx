@@ -1,5 +1,6 @@
+"use server"
 import { auth } from "@/lib/auth"
-import { SignIn, SignOut } from "./auth"
+import { SignIn, SignOut } from "./auth-button"
 
 export default async function Navbar() {
 
