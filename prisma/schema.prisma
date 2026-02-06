@@ -49,11 +49,11 @@ model Playlist {
 }
 
 model Song {
-  id        Int     @id @default(autoincrement())
+  id        Int    @id @default(autoincrement())
   title     String
-  url       String?
-  upvotes   Int     @default(0)
-  downvotes Int     @default(0)
+  url       String
+  upvotes   Int    @default(0)
+  downvotes Int    @default(0)
 
   createdById String
   playlistId  Int
