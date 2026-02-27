@@ -30,19 +30,27 @@ export async function createRoom(_prevState: ActionState, formData: FormData): P
     return { error: "name canot be empty" }
   }
 
-  const room = await prisma.room.create({
-    data: {
-      name: parsed.data.name,
-      adminId: session.user.id,
-      playlist: {
-        create: {
-          name: parsed.data.name,
+  let room
+  try {
+
+    room = await prisma.room.create({
+      data: {
+        name: parsed.data.name,
+        adminId: session.user.id,
+        playlist: {
+          create: {
+            name: parsed.data.name,
+          },
         },
       },
-    },
-  })
+    })
+  } catch (error) {
+    console.log("Failed to create room", error)
+    return {
+      error: "failed to create room"
+    }
+  }
 
   revalidatePath("/me")
-
   redirect(`/rooms/${room.id}`)
 }

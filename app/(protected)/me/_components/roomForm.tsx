@@ -7,12 +7,8 @@ type ActionState = {
   error?: string
 }
 
-export function RoomForm() {
-  const [state, formAction, isPending] = useActionState<ActionState, FormData>(
-    createRoom,
-    {}
-  )
-
+export function Create_room_form() {
+  const [state, formAction, isPending] = useActionState<ActionState, FormData>(createRoom, {})
   return (
     <form action={formAction} className="space-y-3">
       <label htmlFor="name" className="block text-sm font-medium">
