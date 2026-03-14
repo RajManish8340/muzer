@@ -29,36 +29,40 @@ model User {
 }
 
 model Room {
-  id   String @id @default(cuid())
-  name String
-
-  adminId String
-  admin   User   @relation(fields: [adminId], references: [id])
-
-  playlist Playlist?
+  id            String    @id @default(cuid())
+  name          String
+  adminId       String
+  admin         User      @relation(fields: [adminId], references: [id])
+  playlist      Playlist?
+  curerntSongId String?   @unique
+  currentSong   Song?     @relation("CurrentSong", fields: [curerntSongId], references: [id])
+  songs         Song[]
 }
 
 model Playlist {
-  id   Int    @id @default(autoincrement())
-  name String
-
+  id     String @id @default(cuid())
+  name   String
   roomId String @unique
   room   Room   @relation(fields: [roomId], references: [id])
-
-  songs Song[]
+  songs  Song[]
 }
 
 model Song {
-  id        Int    @id @default(autoincrement())
-  title     String
-  url       String
-  upvotes   Int    @default(0)
-  downvotes Int    @default(0)
-
+  id          String   @id @default(cuid())
+  title       String
+  url         String
+  upvotes     Int      @default(0)
+  downvotes   Int      @default(0)
+  thumbnail   String?
+  played      Boolean  @default(false)
   createdById String
-  playlistId  Int
+  playlistId  String
   createdBy   User     @relation(fields: [createdById], references: [id])
   playlist    Playlist @relation(fields: [playlistId], references: [id])
+  room        Room?    @relation(fields: [roomId], references: [id])
+
+  roomAsCurrent Room?   @relation("CurrentSong")
+  roomId        String?
 }
 
 model Account {
@@ -74,8 +78,7 @@ model Account {
   scope             String?
   id_token          String? @db.Text
   session_state     String?
-
-  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user              User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([provider, providerAccountId])
   @@map("accounts")

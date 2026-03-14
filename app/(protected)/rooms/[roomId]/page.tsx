@@ -1,7 +1,9 @@
 import { notFound, redirect } from "next/navigation"
 import { auth } from "@/lib/auth"
 import prisma from "@/lib/prisma"
-import Nav_bar_for_rooms from "./_components/nav_for_rooms"
+import { NavbarForRoom } from "./_components/NavForRoom"
+import { AddSongForm } from "./_components/AddSongForm"
+import { FetchSongs } from "./_components/FetchSongs"
 
 type PageProps = {
   params: Promise<{
@@ -39,39 +41,18 @@ export default async function RoomPage({ params }: PageProps) {
 
   return (
     <>
-      <Nav_bar_for_rooms />
+      <NavbarForRoom />
       <div className="p-6 space-y-4">
         <h1 className="text-2xl font-semibold">{room.name}</h1>
-
         <p className="text-sm text-neutral-500">
           Created by: {room.admin.name ?? "Unknown"}
         </p>
 
+        <AddSongForm roomId={roomId} />
+
         <div className="mt-4">
           <h2 className="text-lg font-medium">Playlist</h2>
-
-          {room.playlist?.songs.length ? (
-            <ul className="mt-2 space-y-2">
-              {room.playlist.songs.map(song => (
-                <li key={song.id} className="border p-2 rounded">
-                  <p className="font-medium">{song.title}</p>
-                  {song.url && (
-                    <a
-                      href={song.url}
-                      target="_blank"
-                      className="text-sm text-blue-600 underline"
-                    >
-                      Open
-                    </a>
-                  )}
-                </li>
-              ))}
-            </ul>
-          ) : (
-            <p className="text-sm text-neutral-500 mt-2">
-              No songs yet
-            </p>
-          )}
+          <FetchSongs roomId={roomId} />
         </div>
       </div>
     </>

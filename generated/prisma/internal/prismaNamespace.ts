@@ -981,7 +981,8 @@ export type UserScalarFieldEnum = (typeof UserScalarFieldEnum)[keyof typeof User
 export const RoomScalarFieldEnum = {
   id: 'id',
   name: 'name',
-  adminId: 'adminId'
+  adminId: 'adminId',
+  curerntSongId: 'curerntSongId'
 } as const
 
 export type RoomScalarFieldEnum = (typeof RoomScalarFieldEnum)[keyof typeof RoomScalarFieldEnum]
@@ -1002,8 +1003,11 @@ export const SongScalarFieldEnum = {
   url: 'url',
   upvotes: 'upvotes',
   downvotes: 'downvotes',
+  thumbnail: 'thumbnail',
+  played: 'played',
   createdById: 'createdById',
-  playlistId: 'playlistId'
+  playlistId: 'playlistId',
+  roomId: 'roomId'
 } as const
 
 export type SongScalarFieldEnum = (typeof SongScalarFieldEnum)[keyof typeof SongScalarFieldEnum]
@@ -1115,6 +1119,13 @@ export type IntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'In
  * Reference to a field of type 'Int[]'
  */
 export type ListIntFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Int[]'>
+    
+
+
+/**
+ * Reference to a field of type 'Boolean'
+ */
+export type BooleanFieldRefInput<$PrismaModel> = FieldRefInputType<$PrismaModel, 'Boolean'>
     
 
 

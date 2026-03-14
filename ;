@@ -60,7 +60,7 @@ export async function addSong(prevState_: any, formdata: FormData,): Promise<Act
   if (!room) return { error: "room not found" }
   if (!room.playlist) return { error: " playlist not found in this room" }
 
-  if (!url.includes("youtube.com")) {
+  if (!url.includes("youtube.com") || !url.includes("youtu.be")) {
     return { error: "please enter a valid YT url" }
   }
 

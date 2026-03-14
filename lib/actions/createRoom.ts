@@ -24,6 +24,7 @@ export async function createRoom(_prevState: ActionState, formData: FormData): P
 
   const parsed = roomSchema.safeParse({
     name: formData.get("name"),
+
   })
 
   if (!parsed.success) {

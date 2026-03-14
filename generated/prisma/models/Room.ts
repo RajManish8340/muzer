@@ -28,18 +28,21 @@ export type RoomMinAggregateOutputType = {
   id: string | null
   name: string | null
   adminId: string | null
+  curerntSongId: string | null
 }
 
 export type RoomMaxAggregateOutputType = {
   id: string | null
   name: string | null
   adminId: string | null
+  curerntSongId: string | null
 }
 
 export type RoomCountAggregateOutputType = {
   id: number
   name: number
   adminId: number
+  curerntSongId: number
   _all: number
 }
 
@@ -48,18 +51,21 @@ export type RoomMinAggregateInputType = {
   id?: true
   name?: true
   adminId?: true
+  curerntSongId?: true
 }
 
 export type RoomMaxAggregateInputType = {
   id?: true
   name?: true
   adminId?: true
+  curerntSongId?: true
 }
 
 export type RoomCountAggregateInputType = {
   id?: true
   name?: true
   adminId?: true
+  curerntSongId?: true
   _all?: true
 }
 
@@ -139,6 +145,7 @@ export type RoomGroupByOutputType = {
   id: string
   name: string
   adminId: string
+  curerntSongId: string | null
   _count: RoomCountAggregateOutputType | null
   _min: RoomMinAggregateOutputType | null
   _max: RoomMaxAggregateOutputType | null
@@ -166,20 +173,27 @@ export type RoomWhereInput = {
   id?: Prisma.StringFilter<"Room"> | string
   name?: Prisma.StringFilter<"Room"> | string
   adminId?: Prisma.StringFilter<"Room"> | string
+  curerntSongId?: Prisma.StringNullableFilter<"Room"> | string | null
   admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistNullableScalarRelationFilter, Prisma.PlaylistWhereInput> | null
+  currentSong?: Prisma.XOR<Prisma.SongNullableScalarRelationFilter, Prisma.SongWhereInput> | null
+  songs?: Prisma.SongListRelationFilter
 }
 
 export type RoomOrderByWithRelationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
+  curerntSongId?: Prisma.SortOrderInput | Prisma.SortOrder
   admin?: Prisma.UserOrderByWithRelationInput
   playlist?: Prisma.PlaylistOrderByWithRelationInput
+  currentSong?: Prisma.SongOrderByWithRelationInput
+  songs?: Prisma.SongOrderByRelationAggregateInput
 }
 
 export type RoomWhereUniqueInput = Prisma.AtLeast<{
   id?: string
+  curerntSongId?: string
   AND?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
   OR?: Prisma.RoomWhereInput[]
   NOT?: Prisma.RoomWhereInput | Prisma.RoomWhereInput[]
@@ -187,12 +201,15 @@ export type RoomWhereUniqueInput = Prisma.AtLeast<{
   adminId?: Prisma.StringFilter<"Room"> | string
   admin?: Prisma.XOR<Prisma.UserScalarRelationFilter, Prisma.UserWhereInput>
   playlist?: Prisma.XOR<Prisma.PlaylistNullableScalarRelationFilter, Prisma.PlaylistWhereInput> | null
-}, "id">
+  currentSong?: Prisma.XOR<Prisma.SongNullableScalarRelationFilter, Prisma.SongWhereInput> | null
+  songs?: Prisma.SongListRelationFilter
+}, "id" | "curerntSongId">
 
 export type RoomOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
+  curerntSongId?: Prisma.SortOrderInput | Prisma.SortOrder
   _count?: Prisma.RoomCountOrderByAggregateInput
   _max?: Prisma.RoomMaxOrderByAggregateInput
   _min?: Prisma.RoomMinOrderByAggregateInput
@@ -205,6 +222,7 @@ export type RoomScalarWhereWithAggregatesInput = {
   id?: Prisma.StringWithAggregatesFilter<"Room"> | string
   name?: Prisma.StringWithAggregatesFilter<"Room"> | string
   adminId?: Prisma.StringWithAggregatesFilter<"Room"> | string
+  curerntSongId?: Prisma.StringNullableWithAggregatesFilter<"Room"> | string | null
 }
 
 export type RoomCreateInput = {
@@ -212,13 +230,17 @@ export type RoomCreateInput = {
   name: string
   admin: Prisma.UserCreateNestedOneWithoutRoomsInput
   playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
+  currentSong?: Prisma.SongCreateNestedOneWithoutRoomAsCurrentInput
+  songs?: Prisma.SongCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateInput = {
   id?: string
   name: string
   adminId: string
+  curerntSongId?: string | null
   playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
+  songs?: Prisma.SongUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUpdateInput = {
@@ -226,19 +248,24 @@ export type RoomUpdateInput = {
   name?: Prisma.StringFieldUpdateOperationsInput | string
   admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
   playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
+  currentSong?: Prisma.SongUpdateOneWithoutRoomAsCurrentNestedInput
+  songs?: Prisma.SongUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
+  songs?: Prisma.SongUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomCreateManyInput = {
   id?: string
   name: string
   adminId: string
+  curerntSongId?: string | null
 }
 
 export type RoomUpdateManyMutationInput = {
@@ -250,6 +277,7 @@ export type RoomUncheckedUpdateManyInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
 export type RoomListRelationFilter = {
@@ -266,23 +294,31 @@ export type RoomCountOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
+  curerntSongId?: Prisma.SortOrder
 }
 
 export type RoomMaxOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
+  curerntSongId?: Prisma.SortOrder
 }
 
 export type RoomMinOrderByAggregateInput = {
   id?: Prisma.SortOrder
   name?: Prisma.SortOrder
   adminId?: Prisma.SortOrder
+  curerntSongId?: Prisma.SortOrder
 }
 
 export type RoomScalarRelationFilter = {
   is?: Prisma.RoomWhereInput
   isNot?: Prisma.RoomWhereInput
+}
+
+export type RoomNullableScalarRelationFilter = {
+  is?: Prisma.RoomWhereInput | null
+  isNot?: Prisma.RoomWhereInput | null
 }
 
 export type RoomCreateNestedManyWithoutAdminInput = {
@@ -341,16 +377,68 @@ export type RoomUpdateOneRequiredWithoutPlaylistNestedInput = {
   update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutPlaylistInput, Prisma.RoomUpdateWithoutPlaylistInput>, Prisma.RoomUncheckedUpdateWithoutPlaylistInput>
 }
 
+export type RoomCreateNestedOneWithoutSongsInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutSongsInput, Prisma.RoomUncheckedCreateWithoutSongsInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutSongsInput
+  connect?: Prisma.RoomWhereUniqueInput
+}
+
+export type RoomCreateNestedOneWithoutCurrentSongInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutCurrentSongInput
+  connect?: Prisma.RoomWhereUniqueInput
+}
+
+export type RoomUncheckedCreateNestedOneWithoutCurrentSongInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutCurrentSongInput
+  connect?: Prisma.RoomWhereUniqueInput
+}
+
+export type RoomUpdateOneWithoutSongsNestedInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutSongsInput, Prisma.RoomUncheckedCreateWithoutSongsInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutSongsInput
+  upsert?: Prisma.RoomUpsertWithoutSongsInput
+  disconnect?: Prisma.RoomWhereInput | boolean
+  delete?: Prisma.RoomWhereInput | boolean
+  connect?: Prisma.RoomWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutSongsInput, Prisma.RoomUpdateWithoutSongsInput>, Prisma.RoomUncheckedUpdateWithoutSongsInput>
+}
+
+export type RoomUpdateOneWithoutCurrentSongNestedInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutCurrentSongInput
+  upsert?: Prisma.RoomUpsertWithoutCurrentSongInput
+  disconnect?: Prisma.RoomWhereInput | boolean
+  delete?: Prisma.RoomWhereInput | boolean
+  connect?: Prisma.RoomWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutCurrentSongInput, Prisma.RoomUpdateWithoutCurrentSongInput>, Prisma.RoomUncheckedUpdateWithoutCurrentSongInput>
+}
+
+export type RoomUncheckedUpdateOneWithoutCurrentSongNestedInput = {
+  create?: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+  connectOrCreate?: Prisma.RoomCreateOrConnectWithoutCurrentSongInput
+  upsert?: Prisma.RoomUpsertWithoutCurrentSongInput
+  disconnect?: Prisma.RoomWhereInput | boolean
+  delete?: Prisma.RoomWhereInput | boolean
+  connect?: Prisma.RoomWhereUniqueInput
+  update?: Prisma.XOR<Prisma.XOR<Prisma.RoomUpdateToOneWithWhereWithoutCurrentSongInput, Prisma.RoomUpdateWithoutCurrentSongInput>, Prisma.RoomUncheckedUpdateWithoutCurrentSongInput>
+}
+
 export type RoomCreateWithoutAdminInput = {
   id?: string
   name: string
   playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
+  currentSong?: Prisma.SongCreateNestedOneWithoutRoomAsCurrentInput
+  songs?: Prisma.SongCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutAdminInput = {
   id?: string
   name: string
+  curerntSongId?: string | null
   playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
+  songs?: Prisma.SongUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutAdminInput = {
@@ -386,18 +474,23 @@ export type RoomScalarWhereInput = {
   id?: Prisma.StringFilter<"Room"> | string
   name?: Prisma.StringFilter<"Room"> | string
   adminId?: Prisma.StringFilter<"Room"> | string
+  curerntSongId?: Prisma.StringNullableFilter<"Room"> | string | null
 }
 
 export type RoomCreateWithoutPlaylistInput = {
   id?: string
   name: string
   admin: Prisma.UserCreateNestedOneWithoutRoomsInput
+  currentSong?: Prisma.SongCreateNestedOneWithoutRoomAsCurrentInput
+  songs?: Prisma.SongCreateNestedManyWithoutRoomInput
 }
 
 export type RoomUncheckedCreateWithoutPlaylistInput = {
   id?: string
   name: string
   adminId: string
+  curerntSongId?: string | null
+  songs?: Prisma.SongUncheckedCreateNestedManyWithoutRoomInput
 }
 
 export type RoomCreateOrConnectWithoutPlaylistInput = {
@@ -420,76 +513,225 @@ export type RoomUpdateWithoutPlaylistInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
+  currentSong?: Prisma.SongUpdateOneWithoutRoomAsCurrentNestedInput
+  songs?: Prisma.SongUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutPlaylistInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  songs?: Prisma.SongUncheckedUpdateManyWithoutRoomNestedInput
+}
+
+export type RoomCreateWithoutSongsInput = {
+  id?: string
+  name: string
+  admin: Prisma.UserCreateNestedOneWithoutRoomsInput
+  playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
+  currentSong?: Prisma.SongCreateNestedOneWithoutRoomAsCurrentInput
+}
+
+export type RoomUncheckedCreateWithoutSongsInput = {
+  id?: string
+  name: string
+  adminId: string
+  curerntSongId?: string | null
+  playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
+}
+
+export type RoomCreateOrConnectWithoutSongsInput = {
+  where: Prisma.RoomWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoomCreateWithoutSongsInput, Prisma.RoomUncheckedCreateWithoutSongsInput>
+}
+
+export type RoomCreateWithoutCurrentSongInput = {
+  id?: string
+  name: string
+  admin: Prisma.UserCreateNestedOneWithoutRoomsInput
+  playlist?: Prisma.PlaylistCreateNestedOneWithoutRoomInput
+  songs?: Prisma.SongCreateNestedManyWithoutRoomInput
+}
+
+export type RoomUncheckedCreateWithoutCurrentSongInput = {
+  id?: string
+  name: string
+  adminId: string
+  playlist?: Prisma.PlaylistUncheckedCreateNestedOneWithoutRoomInput
+  songs?: Prisma.SongUncheckedCreateNestedManyWithoutRoomInput
+}
+
+export type RoomCreateOrConnectWithoutCurrentSongInput = {
+  where: Prisma.RoomWhereUniqueInput
+  create: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+}
+
+export type RoomUpsertWithoutSongsInput = {
+  update: Prisma.XOR<Prisma.RoomUpdateWithoutSongsInput, Prisma.RoomUncheckedUpdateWithoutSongsInput>
+  create: Prisma.XOR<Prisma.RoomCreateWithoutSongsInput, Prisma.RoomUncheckedCreateWithoutSongsInput>
+  where?: Prisma.RoomWhereInput
+}
+
+export type RoomUpdateToOneWithWhereWithoutSongsInput = {
+  where?: Prisma.RoomWhereInput
+  data: Prisma.XOR<Prisma.RoomUpdateWithoutSongsInput, Prisma.RoomUncheckedUpdateWithoutSongsInput>
+}
+
+export type RoomUpdateWithoutSongsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
+  playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
+  currentSong?: Prisma.SongUpdateOneWithoutRoomAsCurrentNestedInput
+}
+
+export type RoomUncheckedUpdateWithoutSongsInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
+  playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
+}
+
+export type RoomUpsertWithoutCurrentSongInput = {
+  update: Prisma.XOR<Prisma.RoomUpdateWithoutCurrentSongInput, Prisma.RoomUncheckedUpdateWithoutCurrentSongInput>
+  create: Prisma.XOR<Prisma.RoomCreateWithoutCurrentSongInput, Prisma.RoomUncheckedCreateWithoutCurrentSongInput>
+  where?: Prisma.RoomWhereInput
+}
+
+export type RoomUpdateToOneWithWhereWithoutCurrentSongInput = {
+  where?: Prisma.RoomWhereInput
+  data: Prisma.XOR<Prisma.RoomUpdateWithoutCurrentSongInput, Prisma.RoomUncheckedUpdateWithoutCurrentSongInput>
+}
+
+export type RoomUpdateWithoutCurrentSongInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  admin?: Prisma.UserUpdateOneRequiredWithoutRoomsNestedInput
+  playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
+  songs?: Prisma.SongUpdateManyWithoutRoomNestedInput
+}
+
+export type RoomUncheckedUpdateWithoutCurrentSongInput = {
+  id?: Prisma.StringFieldUpdateOperationsInput | string
+  name?: Prisma.StringFieldUpdateOperationsInput | string
+  adminId?: Prisma.StringFieldUpdateOperationsInput | string
+  playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
+  songs?: Prisma.SongUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomCreateManyAdminInput = {
   id?: string
   name: string
+  curerntSongId?: string | null
 }
 
 export type RoomUpdateWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
   playlist?: Prisma.PlaylistUpdateOneWithoutRoomNestedInput
+  currentSong?: Prisma.SongUpdateOneWithoutRoomAsCurrentNestedInput
+  songs?: Prisma.SongUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   playlist?: Prisma.PlaylistUncheckedUpdateOneWithoutRoomNestedInput
+  songs?: Prisma.SongUncheckedUpdateManyWithoutRoomNestedInput
 }
 
 export type RoomUncheckedUpdateManyWithoutAdminInput = {
   id?: Prisma.StringFieldUpdateOperationsInput | string
   name?: Prisma.StringFieldUpdateOperationsInput | string
+  curerntSongId?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
 }
 
+
+/**
+ * Count Type RoomCountOutputType
+ */
+
+export type RoomCountOutputType = {
+  songs: number
+}
+
+export type RoomCountOutputTypeSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  songs?: boolean | RoomCountOutputTypeCountSongsArgs
+}
+
+/**
+ * RoomCountOutputType without action
+ */
+export type RoomCountOutputTypeDefaultArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the RoomCountOutputType
+   */
+  select?: Prisma.RoomCountOutputTypeSelect<ExtArgs> | null
+}
+
+/**
+ * RoomCountOutputType without action
+ */
+export type RoomCountOutputTypeCountSongsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  where?: Prisma.SongWhereInput
+}
 
 
 export type RoomSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   adminId?: boolean
+  curerntSongId?: boolean
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.Room$playlistArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
+  songs?: boolean | Prisma.Room$songsArgs<ExtArgs>
+  _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
 
 export type RoomSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   adminId?: boolean
+  curerntSongId?: boolean
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
 
 export type RoomSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetSelect<{
   id?: boolean
   name?: boolean
   adminId?: boolean
+  curerntSongId?: boolean
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
 }, ExtArgs["result"]["room"]>
 
 export type RoomSelectScalar = {
   id?: boolean
   name?: boolean
   adminId?: boolean
+  curerntSongId?: boolean
 }
 
-export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "adminId", ExtArgs["result"]["room"]>
+export type RoomOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "adminId" | "curerntSongId", ExtArgs["result"]["room"]>
 export type RoomInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
   playlist?: boolean | Prisma.Room$playlistArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
+  songs?: boolean | Prisma.Room$songsArgs<ExtArgs>
+  _count?: boolean | Prisma.RoomCountOutputTypeDefaultArgs<ExtArgs>
 }
 export type RoomIncludeCreateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
 }
 export type RoomIncludeUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   admin?: boolean | Prisma.UserDefaultArgs<ExtArgs>
+  currentSong?: boolean | Prisma.Room$currentSongArgs<ExtArgs>
 }
 
 export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
@@ -497,11 +739,14 @@ export type $RoomPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
   objects: {
     admin: Prisma.$UserPayload<ExtArgs>
     playlist: Prisma.$PlaylistPayload<ExtArgs> | null
+    currentSong: Prisma.$SongPayload<ExtArgs> | null
+    songs: Prisma.$SongPayload<ExtArgs>[]
   }
   scalars: runtime.Types.Extensions.GetPayloadResult<{
     id: string
     name: string
     adminId: string
+    curerntSongId: string | null
   }, ExtArgs["result"]["room"]>
   composites: {}
 }
@@ -898,6 +1143,8 @@ export interface Prisma__RoomClient<T, Null = never, ExtArgs extends runtime.Typ
   readonly [Symbol.toStringTag]: "PrismaPromise"
   admin<T extends Prisma.UserDefaultArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.UserDefaultArgs<ExtArgs>>): Prisma.Prisma__UserClient<runtime.Types.Result.GetResult<Prisma.$UserPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | Null, Null, ExtArgs, GlobalOmitOptions>
   playlist<T extends Prisma.Room$playlistArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$playlistArgs<ExtArgs>>): Prisma.Prisma__PlaylistClient<runtime.Types.Result.GetResult<Prisma.$PlaylistPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  currentSong<T extends Prisma.Room$currentSongArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$currentSongArgs<ExtArgs>>): Prisma.Prisma__SongClient<runtime.Types.Result.GetResult<Prisma.$SongPayload<ExtArgs>, T, "findUniqueOrThrow", GlobalOmitOptions> | null, null, ExtArgs, GlobalOmitOptions>
+  songs<T extends Prisma.Room$songsArgs<ExtArgs> = {}>(args?: Prisma.Subset<T, Prisma.Room$songsArgs<ExtArgs>>): Prisma.PrismaPromise<runtime.Types.Result.GetResult<Prisma.$SongPayload<ExtArgs>, T, "findMany", GlobalOmitOptions> | Null>
   /**
    * Attaches callbacks for the resolution and/or rejection of the Promise.
    * @param onfulfilled The callback to execute when the Promise is resolved.
@@ -930,6 +1177,7 @@ export interface RoomFieldRefs {
   readonly id: Prisma.FieldRef<"Room", 'String'>
   readonly name: Prisma.FieldRef<"Room", 'String'>
   readonly adminId: Prisma.FieldRef<"Room", 'String'>
+  readonly curerntSongId: Prisma.FieldRef<"Room", 'String'>
 }
     
 
@@ -1342,6 +1590,49 @@ export type Room$playlistArgs<ExtArgs extends runtime.Types.Extensions.InternalA
    */
   include?: Prisma.PlaylistInclude<ExtArgs> | null
   where?: Prisma.PlaylistWhereInput
+}
+
+/**
+ * Room.currentSong
+ */
+export type Room$currentSongArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Song
+   */
+  select?: Prisma.SongSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Song
+   */
+  omit?: Prisma.SongOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SongInclude<ExtArgs> | null
+  where?: Prisma.SongWhereInput
+}
+
+/**
+ * Room.songs
+ */
+export type Room$songsArgs<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
+  /**
+   * Select specific fields to fetch from the Song
+   */
+  select?: Prisma.SongSelect<ExtArgs> | null
+  /**
+   * Omit specific fields from the Song
+   */
+  omit?: Prisma.SongOmit<ExtArgs> | null
+  /**
+   * Choose, which related nodes to fetch as well
+   */
+  include?: Prisma.SongInclude<ExtArgs> | null
+  where?: Prisma.SongWhereInput
+  orderBy?: Prisma.SongOrderByWithRelationInput | Prisma.SongOrderByWithRelationInput[]
+  cursor?: Prisma.SongWhereUniqueInput
+  take?: number
+  skip?: number
+  distinct?: Prisma.SongScalarFieldEnum | Prisma.SongScalarFieldEnum[]
 }
 
 /**

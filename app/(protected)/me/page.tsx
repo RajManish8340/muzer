@@ -1,12 +1,20 @@
 import Navbar from "@/components/nav";
-import { Create_room_form } from "./_components/roomForm";
+import { CreateRoomForm } from "./_components/CreateRoomForm";
+import { Player } from "./_components/Player";
 
 export default async function MePage() {
   return (
     <>
       <Navbar />
-      <h1>Your Dashboard</h1>
-      <Create_room_form />
+      <div className="flex flex-col ">
+
+        <h1>Your Dashboard</h1>
+        <CreateRoomForm />
+        <Player />
+
+
+      </div>
+
     </>
 
   )
