@@ -16,7 +16,6 @@ export async function FetchSongs({ roomId }: { roomId: string }) {
     return <p> NO songs yet</p>
   }
 
-
   return (
 
     <ul className="flex flex-col">{songs.map((song) => (
@@ -26,7 +25,7 @@ export async function FetchSongs({ roomId }: { roomId: string }) {
         )}
         <div>
           <p>{song.title}</p>
-          <p> Votes :{song.upvotes - song.downvotes} </p>
+          <p> Votes :{song.upvotes - song.downvotes}  </p>
         </div>
       </li>
 

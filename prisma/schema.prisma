@@ -24,6 +24,7 @@ model User {
 
   rooms Room[]
   songs Song[]
+  votes Vote[]
 
   @@map("users")
 }
@@ -34,8 +35,8 @@ model Room {
   adminId       String
   admin         User      @relation(fields: [adminId], references: [id])
   playlist      Playlist?
-  curerntSongId String?   @unique
-  currentSong   Song?     @relation("CurrentSong", fields: [curerntSongId], references: [id])
+  currentSongId String?   @unique
+  currentSong   Song?     @relation("CurrentSong", fields: [currentSongId], references: [id])
   songs         Song[]
 }
 
@@ -57,12 +58,25 @@ model Song {
   played      Boolean  @default(false)
   createdById String
   playlistId  String
+  createdAt   DateTime @default(now())
   createdBy   User     @relation(fields: [createdById], references: [id])
   playlist    Playlist @relation(fields: [playlistId], references: [id])
   room        Room?    @relation(fields: [roomId], references: [id])
 
   roomAsCurrent Room?   @relation("CurrentSong")
   roomId        String?
+  votes         Vote[]
+}
+
+model Vote {
+  id     String @id @default(cuid())
+  value  Int
+  userId String
+  songId String
+  user   User   @relation(fields: [userId], references: [id])
+  song   Song   @relation(fields: [songId], references: [id])
+
+  @@unique([userId, songId])
 }
 
 model Account {

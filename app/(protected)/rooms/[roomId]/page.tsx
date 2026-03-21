@@ -38,7 +38,6 @@ export default async function RoomPage({ params }: PageProps) {
     notFound()
   }
 
-
   return (
     <>
       <NavbarForRoom />

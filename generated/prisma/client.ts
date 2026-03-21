@@ -60,6 +60,11 @@ export type Playlist = Prisma.PlaylistModel
  */
 export type Song = Prisma.SongModel
 /**
+ * Model Vote
+ * 
+ */
+export type Vote = Prisma.VoteModel
+/**
  * Model Account
  * 
  */

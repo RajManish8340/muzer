@@ -55,6 +55,7 @@ export const ModelName = {
   Room: 'Room',
   Playlist: 'Playlist',
   Song: 'Song',
+  Vote: 'Vote',
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken'
@@ -91,7 +92,7 @@ export const RoomScalarFieldEnum = {
   id: 'id',
   name: 'name',
   adminId: 'adminId',
-  curerntSongId: 'curerntSongId'
+  currentSongId: 'currentSongId'
 } as const
 
 export type RoomScalarFieldEnum = (typeof RoomScalarFieldEnum)[keyof typeof RoomScalarFieldEnum]
@@ -116,10 +117,21 @@ export const SongScalarFieldEnum = {
   played: 'played',
   createdById: 'createdById',
   playlistId: 'playlistId',
+  createdAt: 'createdAt',
   roomId: 'roomId'
 } as const
 
 export type SongScalarFieldEnum = (typeof SongScalarFieldEnum)[keyof typeof SongScalarFieldEnum]
+
+
+export const VoteScalarFieldEnum = {
+  id: 'id',
+  value: 'value',
+  userId: 'userId',
+  songId: 'songId'
+} as const
+
+export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {
