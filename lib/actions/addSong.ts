@@ -1,4 +1,4 @@
-"use server"
+"use server";
 import { z } from "zod";
 import prisma from "../prisma";
 import { auth } from "../auth";
@@ -29,8 +29,7 @@ async function fetchYtMetaData(songUrl: string) {
   }
 }
 
-export async function addSong(prevState_: any, formdata: FormData,): Promise<ActionState> {
-
+export async function addSong(prevState_: any, formdata: FormData): Promise<ActionState> {
   const session = await auth()
 
   if (!session?.user?.id) {
@@ -49,16 +48,12 @@ export async function addSong(prevState_: any, formdata: FormData,): Promise<Act
   const { url, roomId } = parsed.data;
 
   const room = await prisma.room.findUnique({
-    where: {
-      id: roomId
-    },
-    include: {
-      playlist: true
-    }
+    where: { id: roomId },
+    include: { playlist: true }
   })
 
   if (!room) return { error: "room not found" }
-  if (!room.playlist) return { error: " playlist not found in this room" }
+  if (!room.playlist) return { error: "playlist not found in this room" }
 
   if (!url.includes("youtube.com")) {
     return { error: "please enter a valid YT url" }
@@ -75,26 +70,34 @@ export async function addSong(prevState_: any, formdata: FormData,): Promise<Act
     }
   }
 
+  let createdSong;
   try {
-    await prisma.song.create({
+    createdSong = await prisma.song.create({
       data: {
         url: url,
         title: title,
         thumbnail: thumbnail,
         createdById: session.user.id,
         playlistId: room.playlist.id
-
       }
     })
   } catch (error) {
     console.log("failed to add song ", error)
-
-    return {
-      error: "DB-error : could not add song"
-    }
+    return { error: "DB-error : could not add song" }
   }
+
+  // After the song is created, check if room has no current song
+  const roomAfterAdd = await prisma.room.findUnique({
+    where: { id: roomId },
+    select: { currentSongId: true },
+  });
+  if (!roomAfterAdd?.currentSongId && createdSong) {
+    await prisma.room.update({
+      where: { id: roomId },
+      data: { currentSongId: createdSong.id },
+    });
+  }
+
   revalidatePath(`/rooms/${room.id}`)
-
   return {}
-
 }

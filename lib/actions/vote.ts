@@ -108,4 +108,6 @@ export async function vote(formData: FormData) {
   if (song) {
     revalidatePath(`/rooms/${song.playlist.roomId}`)
   }
+
+  revalidatePath(`/rooms/${song?.playlist.roomId}`)
 }

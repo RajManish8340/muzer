@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Player } from "./Player";
 import { vote } from "@/lib/actions/vote";
 import { advanceToNextSong } from "@/lib/actions/advanceToNext";
@@ -31,17 +31,28 @@ export function RoomClient({
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
 
-  // Handle vote (will revalidate, so page refreshes – for real-time, add Pusher)
+  // Sync with props after revalidation
+  useEffect(() => {
+    setCurrentSong(initialCurrentSong);
+  }, [initialCurrentSong]);
+
+  useEffect(() => {
+    setSongs(initialSongs);
+  }, [initialSongs]);
+
   const handleVote = async (formData: FormData) => {
     await vote(formData);
-    // After vote, the page will revalidate and fetch new data automatically
-    // but we could optimistically update UI here if desired.
+    // Revalidation will trigger props update, which will sync state.
   };
 
   const handleNext = async () => {
     if (isAdmin) {
-      const next = await advanceToNextSong(roomId);
-      if (next) setCurrentSong(next);
+      try {
+        const next = await advanceToNextSong(roomId);
+        if (next) setCurrentSong(next);
+      } catch (err) {
+        console.error("Failed to advance:", err);
+      }
     }
   };
 
