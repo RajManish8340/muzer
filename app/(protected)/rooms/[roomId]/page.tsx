@@ -1,42 +1,39 @@
-import { notFound, redirect } from "next/navigation"
-import { auth } from "@/lib/auth"
-import prisma from "@/lib/prisma"
-import { NavbarForRoom } from "./_components/NavForRoom"
-import { AddSongForm } from "./_components/AddSongForm"
-import { FetchSongs } from "./_components/FetchSongs"
+// app/rooms/[roomId]/page.tsx
+import { notFound, redirect } from "next/navigation";
+import { auth } from "@/lib/auth";
+import prisma from "@/lib/prisma";
+import { NavbarForRoom } from "./_components/NavForRoom";
+import { AddSongForm } from "./_components/AddSongForm";
+import { RoomClient } from "./_components/RoomClient"; // we'll create this
 
 type PageProps = {
-  params: Promise<{
-    roomId: string
-  }>
-}
+  params: Promise<{ roomId: string }>;
+};
 
 export default async function RoomPage({ params }: PageProps) {
-  const { roomId } = await params
-
-  const session = await auth()
-
-  if (!session?.user?.id) {
-    redirect("/")
-  }
+  const { roomId } = await params;
+  const session = await auth();
+  if (!session?.user?.id) redirect("/");
 
   const room = await prisma.room.findUnique({
-    where: {
-      id: roomId,
-    },
+    where: { id: roomId },
     include: {
       playlist: {
         include: {
-          songs: true,
+          songs: {
+            where: { played: false }, // only unplayed for playlist
+            orderBy: { createdAt: "desc" },
+          },
         },
       },
       admin: true,
+      currentSong: true, // includes the current song details
     },
-  })
+  });
 
-  if (!room) {
-    notFound()
-  }
+  if (!room) notFound();
+
+  const isAdmin = room.adminId === session.user.id;
 
   return (
     <>
@@ -49,11 +46,13 @@ export default async function RoomPage({ params }: PageProps) {
 
         <AddSongForm roomId={roomId} />
 
-        <div className="mt-4">
-          <h2 className="text-lg font-medium">Playlist</h2>
-          <FetchSongs roomId={roomId} />
-        </div>
+        <RoomClient
+          roomId={roomId}
+          isAdmin={isAdmin}
+          initialCurrentSong={room.currentSong}
+          initialSongs={room.playlist?.songs ?? []}
+        />
       </div>
     </>
-  )
+  );
 }

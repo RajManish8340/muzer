@@ -1,3 +1,4 @@
+"use server"
 import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import prisma from "../prisma";
@@ -6,7 +7,7 @@ export async function advanceToNextSong(roomId: string) {
   const session = await auth()
 
   if (!session?.user?.id) {
-    return { error: "Unauthorized" }
+    throw new Error("Unauthorized");
   }
 
   const room = await prisma.room.findUnique({
@@ -15,11 +16,11 @@ export async function advanceToNextSong(roomId: string) {
   })
 
   if (!room) {
-    return { error: "room not found" }
+    throw new Error("No room Found");
   }
 
   if (session.user.id !== room.admin.id) {
-    return { error: "Only admins can advance" }
+    throw new Error("Only admin can advance");
   }
 
   if (room.currentSongId) {
@@ -34,11 +35,11 @@ export async function advanceToNextSong(roomId: string) {
       playlist: { roomId: roomId },
       played: false
     },
-    orderBy: {
-      upvotes: "desc",
-      downvotes: "asc",
-      createdAt: "asc"
-    }
+    orderBy: [
+      { upvotes: "desc" },
+      { downvotes: "asc" },
+      { createdAt: "asc" }
+    ]
   })
 
   if (!nextSong) {
