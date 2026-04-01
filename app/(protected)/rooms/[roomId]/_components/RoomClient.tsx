@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import { Player } from "./Player";
 import { vote } from "@/lib/actions/vote";
 import { advanceToNextSong } from "@/lib/actions/advanceToNext";
+import { useRouter } from "next/navigation";
 
 interface Song {
   id: string;
@@ -29,6 +30,7 @@ export function RoomClient({
   initialSongs,
 }: RoomClientProps) {
 
+
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
 
@@ -40,43 +42,51 @@ export function RoomClient({
     setSongs(initialSongs);
   }, [initialSongs]);
 
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     router.refresh()
+  //   }, 2000)
+  //
+  //   return () => clearInterval(interval)
+  // }, [])
   useEffect(() => {
-    const eventSource = new EventSource(`/api/rooms/${roomId}/events`);
+    const es = new EventSource(`/api/rooms/${roomId}/events`);
 
-    // Handle incoming song additions
-    eventSource.addEventListener('song-added', (e: MessageEvent) => {
-      const newSong = JSON.parse(e.data);
-      setSongs(prev => [...prev, newSong]); // Append, don't replace
+    es.addEventListener("connected", () => {
+      console.log("SSE connected for room", roomId);
     });
 
-    // Handle vote updates
-    eventSource.addEventListener('vote-updated', (e: MessageEvent) => {
-      const { songId, upvotes, downvotes } = JSON.parse(e.data);
-      setSongs(prev =>
-        prev.map(song =>
-          song.id === songId ? { ...song, upvotes, downvotes } : song
-        )
+    // { song: Song }
+    es.addEventListener("song-added", (e: MessageEvent) => {
+      const { song }: { song: Song } = JSON.parse(e.data);
+      setSongs((prev) =>
+        prev.some((s) => s.id === song.id) ? prev : [...prev, song]
       );
     });
 
-    // Handle current song change
-    eventSource.addEventListener('song-changed', (e: MessageEvent) => {
-      const newCurrent = JSON.parse(e.data);
-      setCurrentSong(newCurrent);
+    // { songId, upvotes, downvotes }
+    es.addEventListener("vote-updated", (e: MessageEvent) => {
+      const { songId, upvotes, downvotes } = JSON.parse(e.data);
+      setSongs((prev) =>
+        prev.map((s) => (s.id === songId ? { ...s, upvotes, downvotes } : s))
+      );
     });
 
-    // Optional: reconnect or log errors
-    eventSource.onerror = (err) => {
-      console.error('EventSource failed:', err);
-      eventSource.close(); // Close the failed connection
+    // { song: Song | null }
+    es.addEventListener("song-changed", (e: MessageEvent) => {
+      const { song }: { song: Song | null } = JSON.parse(e.data);
+      setCurrentSong(song);
+      // Remove the now-playing song from the queue
+      if (song) setSongs((prev) => prev.filter((s) => s.id !== song.id));
+    });
+
+    es.onerror = () => {
+      // EventSource auto-reconnects — no manual retry needed
+      console.warn("SSE error, browser will retry...");
     };
 
-    // Cleanup: close the connection when component unmounts or roomId changes
-    return () => {
-      eventSource.close();
-    };
-  }, [roomId]); // Only re‑run when roomId changes
-
+    return () => es.close();
+  }, [roomId]);
   const handleVote = async (formData: FormData) => {
     await vote(formData);
   };

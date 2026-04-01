@@ -54,11 +54,11 @@ export async function advanceToNextSong(roomId: string) {
 
   await prisma.room.update({
     where: { id: roomId },
-    data: { currentSongId: nextSong.id }
+    data: { currentSongId: nextSong?.id ?? null }
   })
-  broadcast(roomId, 'song-changed', { song: nextSong })
+  broadcast(roomId, 'song-changed', { song: nextSong ?? null })
   revalidatePath(`/rooms/${roomId}`)
-  return nextSong
+  return nextSong ?? null
 }
 
 

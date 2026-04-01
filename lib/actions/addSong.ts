@@ -87,18 +87,22 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
     return { error: "DB-error : could not add song" }
   }
 
-  const roomAfterAdd = await prisma.room.findUnique({
-    where: { id: roomId },
-    select: { currentSongId: true },
-  });
-  if (!roomAfterAdd?.currentSongId && createdSong) {
+  let isNowCurrent = false
+  if (!room.currentSongId) {
     await prisma.room.update({
       where: { id: roomId },
       data: { currentSongId: createdSong.id },
     });
+    isNowCurrent = true
   }
 
+  // Broadcast song-added so others see it in the queue
   broadcast(roomId, 'song-added', { song: createdSong })
+
+  // If it became the current song, also broadcast that
+  if (isNowCurrent) {
+    broadcast(roomId, 'song-changed', { song: createdSong })
+  }
 
   revalidatePath(`/rooms/${room.id}`)
   return {}
