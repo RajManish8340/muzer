@@ -1,9 +1,12 @@
 
 "use server"
+"use cache"
 
 import prisma from "@/lib/prisma"
+import { cacheLife } from "next/cache"
 
 export async function FetchSongs({ roomId }: { roomId: string }) {
+  cacheLife("seconds")
   const songs = await prisma.song.findMany({
     where: {
       playlist: {

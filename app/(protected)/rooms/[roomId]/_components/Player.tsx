@@ -34,14 +34,12 @@ export function Player({ currentSong, isAdmin, onEnded }: PlayerProps) {
           onEnded={onEnded}
         />
       </div>
-      {muted && (
-        <button
-          onClick={() => setMuted(false)}
-          className="bg-blue-600 text-white px-4 py-2 rounded"
-        >
-          Unmute
-        </button>
-      )}
+      <button
+        onClick={() => setMuted(false)}
+        className="bg-blue-600 text-white px-4 py-2 rounded"
+      >
+        Unmute
+      </button>
     </div>
   );
 }

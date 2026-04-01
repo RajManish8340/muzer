@@ -2,6 +2,7 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import prisma from "../prisma";
+import { broadcast } from "../sseClient";
 
 export async function advanceToNextSong(roomId: string) {
   const session = await auth()
@@ -55,6 +56,7 @@ export async function advanceToNextSong(roomId: string) {
     where: { id: roomId },
     data: { currentSongId: nextSong.id }
   })
+  broadcast(roomId, 'song-changed', { song: nextSong })
   revalidatePath(`/rooms/${roomId}`)
   return nextSong
 }

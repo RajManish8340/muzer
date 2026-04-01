@@ -1,9 +1,9 @@
 "use server"
-
 import z from "zod";
 import { auth } from "../auth";
 import prisma from "../prisma";
 import { revalidatePath } from "next/cache";
+import { broadcast } from "../sseClient";
 
 const voteSchema = z.object({
   songId: z.string(),
@@ -102,12 +102,11 @@ export async function vote(formData: FormData) {
 
   const song = await prisma.song.findUnique({
     where: { id: songId },
-    select: { playlist: { select: { roomId: true } } }
+    select: { playlist: { select: { roomId: true } }, upvotes: true, downvotes: true }
   })
 
   if (song) {
+    broadcast(song.playlist.roomId, 'vote-updated', { songId, upvotes: song.upvotes, downvotes: song.downvotes })
     revalidatePath(`/rooms/${song.playlist.roomId}`)
   }
-
-  revalidatePath(`/rooms/${song?.playlist.roomId}`)
 }

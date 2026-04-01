@@ -16,7 +16,7 @@ export default async function Navbar() {
           </div>
         ) : (
           <div className=" flex items-center p-1 justify-between ">
-            <p className="text-white text-center pr-5 items-center content-center">{session.user?.name?.split(" ")[0].toUpperCase()}</p>
+            <p className="text-white text-center pr-5 items-center content-center">{session.user?.email}</p>
             <SignOut />
           </div>
         )}

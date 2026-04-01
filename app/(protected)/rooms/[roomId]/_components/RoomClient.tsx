@@ -28,10 +28,10 @@ export function RoomClient({
   initialCurrentSong,
   initialSongs,
 }: RoomClientProps) {
+
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
 
-  // Sync with props after revalidation
   useEffect(() => {
     setCurrentSong(initialCurrentSong);
   }, [initialCurrentSong]);
@@ -40,9 +40,45 @@ export function RoomClient({
     setSongs(initialSongs);
   }, [initialSongs]);
 
+  useEffect(() => {
+    const eventSource = new EventSource(`/api/rooms/${roomId}/events`);
+
+    // Handle incoming song additions
+    eventSource.addEventListener('song-added', (e: MessageEvent) => {
+      const newSong = JSON.parse(e.data);
+      setSongs(prev => [...prev, newSong]); // Append, don't replace
+    });
+
+    // Handle vote updates
+    eventSource.addEventListener('vote-updated', (e: MessageEvent) => {
+      const { songId, upvotes, downvotes } = JSON.parse(e.data);
+      setSongs(prev =>
+        prev.map(song =>
+          song.id === songId ? { ...song, upvotes, downvotes } : song
+        )
+      );
+    });
+
+    // Handle current song change
+    eventSource.addEventListener('song-changed', (e: MessageEvent) => {
+      const newCurrent = JSON.parse(e.data);
+      setCurrentSong(newCurrent);
+    });
+
+    // Optional: reconnect or log errors
+    eventSource.onerror = (err) => {
+      console.error('EventSource failed:', err);
+      eventSource.close(); // Close the failed connection
+    };
+
+    // Cleanup: close the connection when component unmounts or roomId changes
+    return () => {
+      eventSource.close();
+    };
+  }, [roomId]); // Only re‑run when roomId changes
+
   const handleVote = async (formData: FormData) => {
     await vote(formData);
-    // Revalidation will trigger props update, which will sync state.
   };
 
   const handleNext = async () => {

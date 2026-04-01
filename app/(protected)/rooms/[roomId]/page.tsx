@@ -1,4 +1,3 @@
-// app/rooms/[roomId]/page.tsx
 import { notFound, redirect } from "next/navigation";
 import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";

@@ -3,6 +3,7 @@ import { z } from "zod";
 import prisma from "../prisma";
 import { auth } from "../auth";
 import { revalidatePath } from "next/cache";
+import { broadcast } from "../sseClient";
 
 const songSchema = z.object({
   url: z.url("please enter valid url").min(1, "URL is required"),
@@ -86,7 +87,6 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
     return { error: "DB-error : could not add song" }
   }
 
-  // After the song is created, check if room has no current song
   const roomAfterAdd = await prisma.room.findUnique({
     where: { id: roomId },
     select: { currentSongId: true },
@@ -98,6 +98,9 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
     });
   }
 
+  broadcast(roomId, 'song-added', { song: createdSong })
+
   revalidatePath(`/rooms/${room.id}`)
   return {}
+
 }

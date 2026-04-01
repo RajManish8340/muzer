@@ -1,5 +1,6 @@
 import { auth } from "@/lib/auth";
 import { redirect } from "next/navigation";
+import { Suspense } from "react";
 
 export default async function ProtectedLayout({
   children,
@@ -14,7 +15,9 @@ export default async function ProtectedLayout({
   }
   return (
     <>
-      {children}
+      <Suspense>
+        {children}
+      </Suspense>
     </>
   );
 }
