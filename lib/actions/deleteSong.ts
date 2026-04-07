@@ -9,7 +9,7 @@ const deleteSchema = z.object({
   songId: z.string()
 })
 
-export async function delteSong(formData: FormData) {
+export async function delteSong(formData: FormData, roomId: string) {
   const session = await auth();
 
   if (!session?.user?.id) {
@@ -22,6 +22,20 @@ export async function delteSong(formData: FormData) {
 
   if (!parsed.success) {
     return { error: "invalid data" }
+  }
+
+  const room = await prisma.room.findUnique({
+    where: {
+      id: roomId
+    },
+    select: {
+      admin: true,
+      currentSong: true
+    }
+  })
+
+  if (session.user.id !== room?.admin.id) {
+    return { error: "Only admin can delete" }
   }
 
   const songId = parsed.data.songId
@@ -41,8 +55,9 @@ export async function delteSong(formData: FormData) {
         id: song.id
       }
     })
-    broadcast(song.playlist.roomId, "song-deleted", song.id)
-    revalidatePath(`/rooms/${song.playlist.roomId}`)
+
+    broadcast(song.playlist.roomId, "song-deleted", { songId: song.id })
+    revalidatePath(`/rooms/${roomId}`)
     console.log("song delte action")
   }
 }

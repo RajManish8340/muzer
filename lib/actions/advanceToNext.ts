@@ -48,6 +48,7 @@ export async function advanceToNextSong(roomId: string) {
       where: { id: roomId },
       data: { currentSongId: null }
     })
+    broadcast(roomId, "song-changed", { song: null })
     revalidatePath(`/rooms/${roomId}`)
     return null
   }

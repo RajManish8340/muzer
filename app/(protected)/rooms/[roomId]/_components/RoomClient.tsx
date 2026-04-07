@@ -6,6 +6,7 @@ import { vote } from "@/lib/actions/vote";
 import { advanceToNextSong } from "@/lib/actions/advanceToNext";
 import { Trash } from "lucide-react";
 import { delteSong } from "@/lib/actions/deleteSong";
+import { deleteRoom } from "@/lib/actions/deleteRoom";
 
 interface Song {
   id: string;
@@ -31,17 +32,8 @@ export function RoomClient({
   initialSongs,
 }: RoomClientProps) {
 
-
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
-
-  useEffect(() => {
-    setCurrentSong(initialCurrentSong);
-  }, [initialCurrentSong]);
-
-  useEffect(() => {
-    setSongs(initialSongs);
-  }, [initialSongs]);
 
   useEffect(() => {
     const es = new EventSource(`/api/rooms/${roomId}/events`);
@@ -87,17 +79,19 @@ export function RoomClient({
   };
 
   const handleSongDelete = async (formData: FormData) => {
-    await delteSong(formData)
+    await delteSong(formData, roomId)
+  }
+
+  const handleRoomDelete = async () => {
+    await deleteRoom(roomId)
   }
 
   const handleNext = async () => {
-    if (isAdmin) {
-      try {
-        const next = await advanceToNextSong(roomId);
-        if (next) setCurrentSong(next);
-      } catch (err) {
-        console.error("Failed to advance:", err);
-      }
+    if (!isAdmin) return
+    try {
+      await advanceToNextSong(roomId)
+    } catch (err) {
+      console.error("Failed to advance:", err);
     }
   };
 
@@ -109,14 +103,17 @@ export function RoomClient({
         onEnded={handleNext}
       />
 
-      {isAdmin && (
-        <button
-          onClick={handleNext}
-          className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer"
-        >
-          Next Song
-        </button>
-      )}
+      <div>
+        {isAdmin && (
+          <button
+            onClick={handleNext}
+            className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer"
+          >
+            Next Song
+          </button>
+        )}
+        <button onClick={handleRoomDelete} className="bg-red-300 text-white mx-4 px-4 py-2 rounded">DeleteRoom</button>
+      </div>
 
       <div>
         <h2 className="text-lg font-medium">Playlist</h2>
@@ -168,14 +165,16 @@ export function RoomClient({
                   </form>
                 </div>
 
-                <div>
-                  <form action={handleSongDelete}>
-                    <button type="submit">
-                      <input type="hidden" name="songId" value={song.id} />
-                      <Trash />
-                    </button>
-                  </form>
-                </div>
+                {isAdmin &&
+                  <div>
+                    <form action={handleSongDelete}>
+                      <button type="submit">
+                        <input type="hidden" name="songId" value={song.id} />
+                        <Trash />
+                      </button>
+                    </form>
+                  </div>
+                }
 
               </li>
             ))}

@@ -44,7 +44,7 @@ model Playlist {
   id     String @id @default(cuid())
   name   String
   roomId String @unique
-  room   Room   @relation(fields: [roomId], references: [id])
+  room   Room   @relation(fields: [roomId], references: [id], onDelete: Cascade)
   songs  Song[]
 }
 
@@ -60,8 +60,8 @@ model Song {
   playlistId  String
   createdAt   DateTime @default(now())
   createdBy   User     @relation(fields: [createdById], references: [id])
-  playlist    Playlist @relation(fields: [playlistId], references: [id])
-  room        Room?    @relation(fields: [roomId], references: [id])
+  playlist    Playlist @relation(fields: [playlistId], references: [id], onDelete: Cascade)
+  room        Room?    @relation(fields: [roomId], references: [id], onDelete: SetNull)
 
   roomAsCurrent Room?   @relation("CurrentSong")
   roomId        String?
@@ -74,7 +74,7 @@ model Vote {
   userId String
   songId String
   user   User   @relation(fields: [userId], references: [id])
-  song   Song   @relation(fields: [songId], references: [id])
+  song   Song   @relation(fields: [songId], references: [id], onDelete: Cascade)
 
   @@unique([userId, songId])
 }
