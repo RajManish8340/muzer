@@ -4,7 +4,8 @@ import { useState, useEffect } from "react";
 import { Player } from "./Player";
 import { vote } from "@/lib/actions/vote";
 import { advanceToNextSong } from "@/lib/actions/advanceToNext";
-import { useRouter } from "next/navigation";
+import { Trash } from "lucide-react";
+import { delteSong } from "@/lib/actions/deleteSong";
 
 interface Song {
   id: string;
@@ -42,13 +43,6 @@ export function RoomClient({
     setSongs(initialSongs);
   }, [initialSongs]);
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     router.refresh()
-  //   }, 2000)
-  //
-  //   return () => clearInterval(interval)
-  // }, [])
   useEffect(() => {
     const es = new EventSource(`/api/rooms/${roomId}/events`);
 
@@ -56,15 +50,13 @@ export function RoomClient({
       console.log("SSE connected for room", roomId);
     });
 
-    // { song: Song }
     es.addEventListener("song-added", (e: MessageEvent) => {
-      const { song }: { song: Song } = JSON.parse(e.data);
+      const { song }: { song: Song } = JSON.parse(e.data)
       setSongs((prev) =>
         prev.some((s) => s.id === song.id) ? prev : [...prev, song]
-      );
-    });
+      )
+    })
 
-    // { songId, upvotes, downvotes }
     es.addEventListener("vote-updated", (e: MessageEvent) => {
       const { songId, upvotes, downvotes } = JSON.parse(e.data);
       setSongs((prev) =>
@@ -72,24 +64,31 @@ export function RoomClient({
       );
     });
 
-    // { song: Song | null }
     es.addEventListener("song-changed", (e: MessageEvent) => {
       const { song }: { song: Song | null } = JSON.parse(e.data);
       setCurrentSong(song);
-      // Remove the now-playing song from the queue
       if (song) setSongs((prev) => prev.filter((s) => s.id !== song.id));
     });
 
+    es.addEventListener("song-deleted", (e: MessageEvent) => {
+      const { songId } = JSON.parse(e.data)
+      setSongs((prev) => prev.filter((s) => s.id !== songId)) // no curly braces it will be returned automatically 
+    })
+
     es.onerror = () => {
-      // EventSource auto-reconnects — no manual retry needed
       console.warn("SSE error, browser will retry...");
     };
 
     return () => es.close();
   }, [roomId]);
+
   const handleVote = async (formData: FormData) => {
     await vote(formData);
   };
+
+  const handleSongDelete = async (formData: FormData) => {
+    await delteSong(formData)
+  }
 
   const handleNext = async () => {
     if (isAdmin) {
@@ -113,7 +112,7 @@ export function RoomClient({
       {isAdmin && (
         <button
           onClick={handleNext}
-          className="bg-green-600 text-white px-4 py-2 rounded"
+          className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer"
         >
           Next Song
         </button>
@@ -137,6 +136,7 @@ export function RoomClient({
                     className="w-20 h-auto rounded"
                   />
                 )}
+
                 <div className="flex-1">
                   <p className="font-medium">{song.title}</p>
                   <p className="text-sm text-gray-600">
@@ -144,6 +144,7 @@ export function RoomClient({
                     {song.downvotes})
                   </p>
                 </div>
+
                 <div className="flex gap-1">
                   <form action={handleVote}>
                     <input type="hidden" name="songId" value={song.id} />
@@ -166,6 +167,16 @@ export function RoomClient({
                     </button>
                   </form>
                 </div>
+
+                <div>
+                  <form action={handleSongDelete}>
+                    <button type="submit">
+                      <input type="hidden" name="songId" value={song.id} />
+                      <Trash />
+                    </button>
+                  </form>
+                </div>
+
               </li>
             ))}
           </ul>

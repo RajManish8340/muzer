@@ -56,7 +56,7 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
   if (!room) return { error: "room not found" }
   if (!room.playlist) return { error: "playlist not found in this room" }
 
-  if (!url.includes("youtube.com")) {
+  if (!url.includes("youtube.com") && !url.includes("youtu.be")) {
     return { error: "please enter a valid YT url" }
   }
 
@@ -96,10 +96,8 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
     isNowCurrent = true
   }
 
-  // Broadcast song-added so others see it in the queue
   broadcast(roomId, 'song-added', { song: createdSong })
 
-  // If it became the current song, also broadcast that
   if (isNowCurrent) {
     broadcast(roomId, 'song-changed', { song: createdSong })
   }

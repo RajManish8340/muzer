@@ -32,6 +32,7 @@ export function Player({ currentSong, isAdmin, onEnded }: PlayerProps) {
           muted={muted}
           controls={isAdmin}
           onEnded={onEnded}
+
         />
       </div>
       <button

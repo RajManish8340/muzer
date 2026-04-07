@@ -10,14 +10,12 @@ export async function GET(
 
   const stream = new ReadableStream<Uint8Array>({
     start(controller) {
-      // Send an initial ping so the client knows the connection is live
       controller.enqueue(
         encoder.encode(`event: connected\ndata: {}\n\n`)
       );
 
       addSSEClient(roomId, controller);
 
-      // Heartbeat every 25s — prevents proxies and Vercel from closing the connection
       const heartbeat = setInterval(() => {
         try {
           controller.enqueue(encoder.encode(`: heartbeat\n\n`));
@@ -26,11 +24,10 @@ export async function GET(
         }
       }, 25_000);
 
-      // Clean up when the client disconnects
       request.signal.addEventListener("abort", () => {
         clearInterval(heartbeat);
         removeSSEClient(roomId, controller);
-        try { controller.close(); } catch { /* already closed */ }
+        controller.close()
       });
     },
   });
@@ -40,7 +37,7 @@ export async function GET(
       "Content-Type": "text/event-stream",
       "Cache-Control": "no-cache, no-transform",
       "Connection": "keep-alive",
-      "X-Accel-Buffering": "no", // disables Vercel/nginx response buffering
+      "X-Accel-Buffering": "no",
     },
   });
 }
