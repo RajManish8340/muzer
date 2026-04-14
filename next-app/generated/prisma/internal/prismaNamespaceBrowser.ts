@@ -56,6 +56,7 @@ export const ModelName = {
   Playlist: 'Playlist',
   Song: 'Song',
   Vote: 'Vote',
+  Message: 'Message',
   Account: 'Account',
   Session: 'Session',
   VerificationToken: 'VerificationToken'
@@ -132,6 +133,17 @@ export const VoteScalarFieldEnum = {
 } as const
 
 export type VoteScalarFieldEnum = (typeof VoteScalarFieldEnum)[keyof typeof VoteScalarFieldEnum]
+
+
+export const MessageScalarFieldEnum = {
+  id: 'id',
+  content: 'content',
+  sender: 'sender',
+  roomId: 'roomId',
+  createdAt: 'createdAt'
+} as const
+
+export type MessageScalarFieldEnum = (typeof MessageScalarFieldEnum)[keyof typeof MessageScalarFieldEnum]
 
 
 export const AccountScalarFieldEnum = {

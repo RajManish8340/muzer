@@ -22,24 +22,24 @@ const io = new Server(server, {
 })
 
 io.on("connection", (socket) => {
-  console.log("A user is connected", socket.id)
+  console.log("A user connected", socket.id)
 
-  socket.on("sendMessage", (message) => {
-    console.log("recieved message from client", message)
+  socket.on("joinRoom", (roomId) => {
+    socket.join(roomId)
+    console.log(`${socket.id} joined room ${roomId}`)
   })
+
+  socket.on("sendMessage", ({ roomId, content, sender }) => {
+    console.log("=================================================")
+    console.log({ roomId, content, sender })
+    io.to(roomId).emit("receiveMessage", { content, sender })
+  })
+
   socket.on("disconnect", () => {
-    console.log("User Disconneced", socket.id)
+    console.log("User Disconnected", socket.id)
   })
 })
-
-app.post("/reply", (req, res) => {
-  const { message } = req.body;
-  io.emit("receivedMessage", message)
-  res.status(200).send({ success: true })
-})
-
 
 server.listen(4000, () => {
-  console.log(`server started at port 9000`)
+  console.log("listening at port 4000")
 })
-

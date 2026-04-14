@@ -3,7 +3,8 @@ import { auth } from "@/lib/auth";
 import prisma from "@/lib/prisma";
 import { NavbarForRoom } from "./_components/NavForRoom";
 import { AddSongForm } from "./_components/AddSongForm";
-import { RoomClient } from "./_components/RoomClient"; // we'll create this
+import { RoomClient } from "./_components/RoomClient";
+import { Chat } from "./_components/Chat";
 
 type PageProps = {
   params: Promise<{ roomId: string }>;
@@ -20,17 +21,23 @@ export default async function RoomPage({ params }: PageProps) {
       playlist: {
         include: {
           songs: {
-            where: { played: false }, // only unplayed for playlist
+            where: { played: false },
             orderBy: { createdAt: "desc" },
           },
         },
       },
       admin: true,
-      currentSong: true, // includes the current song details
+      currentSong: true,
     },
   });
 
   if (!room) notFound();
+
+  const messages = await prisma.message.findMany({
+    where: { roomId },
+    select: { sender: true, content: true },
+    orderBy: { createdAt: "asc" }
+  })
 
   const isAdmin = room.adminId === session.user.id;
 
@@ -42,14 +49,17 @@ export default async function RoomPage({ params }: PageProps) {
         <p className="text-sm text-neutral-500">
           Created by: {room.admin.name ?? "Unknown"}
         </p>
-
         <AddSongForm roomId={roomId} />
-
         <RoomClient
           roomId={roomId}
           isAdmin={isAdmin}
           initialCurrentSong={room.currentSong}
           initialSongs={room.playlist?.songs ?? []}
+        />
+        <Chat
+          roomId={roomId}
+          sender={session.user.name ?? "Anonymous"}
+          initialMessages={messages}
         />
       </div>
     </>

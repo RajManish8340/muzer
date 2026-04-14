@@ -65,6 +65,11 @@ export type Song = Prisma.SongModel
  */
 export type Vote = Prisma.VoteModel
 /**
+ * Model Message
+ * 
+ */
+export type Message = Prisma.MessageModel
+/**
  * Model Account
  * 
  */
