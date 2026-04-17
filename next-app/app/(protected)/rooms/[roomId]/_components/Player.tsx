@@ -1,8 +1,8 @@
-
 "use client";
 
 import { useState } from "react";
 import ReactPlayer from "react-player";
+import { VolumeX, Volume2 } from "lucide-react";
 
 interface PlayerProps {
   currentSong: { url: string; title: string } | null;
@@ -15,15 +15,15 @@ export function Player({ currentSong, isAdmin, onEnded }: PlayerProps) {
 
   if (!currentSong) {
     return (
-      <div className="aspect-video w-full bg-black flex items-center justify-center text-white">
-        No song playing
+      <div className="aspect-video w-full rounded-xl bg-gradient-to-br from-purple-900/40 to-black flex items-center justify-center border border-purple-900/30">
+        <p className="text-purple-300/60 text-lg">No song playing</p>
       </div>
     );
   }
 
   return (
-    <div className="space-y-2">
-      <div className="aspect-video w-full bg-black">
+    <div className="space-y-3">
+      <div className="aspect-video w-full overflow-hidden rounded-xl bg-black shadow-xl shadow-purple-500/20">
         <ReactPlayer
           src={currentSong.url}
           width="100%"
@@ -32,13 +32,13 @@ export function Player({ currentSong, isAdmin, onEnded }: PlayerProps) {
           muted={muted}
           controls={isAdmin}
           onEnded={onEnded}
-
         />
       </div>
       <button
         onClick={() => setMuted(false)}
-        className="bg-blue-600 text-white px-4 py-2 rounded"
+        className="inline-flex items-center gap-2 rounded-full bg-purple-600/30 px-4 py-1.5 text-sm text-white hover:bg-purple-600/50 transition"
       >
+        {muted ? <VolumeX className="h-4 w-4" /> : <Volume2 className="h-4 w-4" />}
         Unmute
       </button>
     </div>

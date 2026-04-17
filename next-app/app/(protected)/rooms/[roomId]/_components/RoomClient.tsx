@@ -103,17 +103,17 @@ export function RoomClient({
         onEnded={handleNext}
       />
 
-      <div>
-        {isAdmin && (
+      {isAdmin && (
+        <div>
           <button
             onClick={handleNext}
             className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer"
           >
             Next Song
           </button>
-        )}
-        <button onClick={handleRoomDelete} className="bg-red-300 text-white mx-4 px-4 py-2 rounded">DeleteRoom</button>
-      </div>
+          <button onClick={handleRoomDelete} className="bg-red-300 text-white mx-4 px-4 py-2 rounded">DeleteRoom</button>
+        </div>
+      )}
 
       <div>
         <h2 className="text-lg font-medium">Playlist</h2>
