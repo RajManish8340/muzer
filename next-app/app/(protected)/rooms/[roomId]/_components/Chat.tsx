@@ -5,7 +5,9 @@ import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { Send } from "lucide-react";
 
-const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
+const socket = io(process.env.NEXT_PUBLIC_SOCKET_URL, {
+  transports: ["websocket"]
+});
 
 export function Chat({
   roomId,
