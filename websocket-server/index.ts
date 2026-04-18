@@ -9,14 +9,14 @@ app.use(express.json())
 const server = http.createServer(app)
 
 app.use(cors({
-  origin: "http://localhost:3000",
+  origin: process.env.NEXT_PUBLIC_URL,
   methods: ["GET", "POST"],
   credentials: true
 }))
 
 const io = new Server(server, {
   cors: {
-    origin: "http://localhost:3000",
+    origin: process.env.NEXT_PUBLIC_URL,
     methods: ["GET", "POST"]
   },
 })

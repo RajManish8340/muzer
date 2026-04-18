@@ -5,7 +5,7 @@ import { useEffect, useState, useRef } from "react";
 import { io } from "socket.io-client";
 import { Send } from "lucide-react";
 
-const socket = io("http://localhost:4000");
+const socket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`);
 
 export function Chat({
   roomId,
@@ -54,8 +54,8 @@ export function Chat({
           <div
             key={i}
             className={`text-sm ${msg.sender === sender
-                ? "text-right bg-purple-600/20 ml-auto"
-                : "text-left bg-purple-900/20"
+              ? "text-right bg-purple-600/20 ml-auto"
+              : "text-left bg-purple-900/20"
               } rounded-lg px-3 py-1.5 max-w-[85%] break-words`}
           >
             <span className="font-semibold text-purple-300">{msg.sender}:</span>{" "}
