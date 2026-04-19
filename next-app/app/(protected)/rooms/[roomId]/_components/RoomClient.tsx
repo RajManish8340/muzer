@@ -7,6 +7,7 @@ import { advanceToNextSong } from "@/lib/actions/advanceToNext";
 import { Trash } from "lucide-react";
 import { delteSong } from "@/lib/actions/deleteSong";
 import { deleteRoom } from "@/lib/actions/deleteRoom";
+import { io, Socket } from "socket.io-client";
 
 interface Song {
   id: string;
@@ -34,44 +35,40 @@ export function RoomClient({
 
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
-
+  const [socket, setSocket] = useState<Socket | null>(null)
+  console.log("WS URL:", process.env.NEXT_PUBLIC_SOCKET_URL);
+  console.log("WS Secret exists?", process.env.WS_SECRET);
   useEffect(() => {
-    const es = new EventSource(`/api/rooms/${roomId}/events`);
-
-    es.addEventListener("connected", () => {
-      console.log("SSE connected for room", roomId);
-    });
-
-    es.addEventListener("song-added", (e: MessageEvent) => {
-      const { song }: { song: Song } = JSON.parse(e.data)
-      setSongs((prev) =>
-        prev.some((s) => s.id === song.id) ? prev : [...prev, song]
-      )
+    const newSocket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
+      transports: ["websocket"]
     })
 
-    es.addEventListener("vote-updated", (e: MessageEvent) => {
-      const { songId, upvotes, downvotes } = JSON.parse(e.data);
-      setSongs((prev) =>
-        prev.map((s) => (s.id === songId ? { ...s, upvotes, downvotes } : s))
-      );
-    });
-
-    es.addEventListener("song-changed", (e: MessageEvent) => {
-      const { song }: { song: Song | null } = JSON.parse(e.data);
-      setCurrentSong(song);
-      if (song) setSongs((prev) => prev.filter((s) => s.id !== song.id));
-    });
-
-    es.addEventListener("song-deleted", (e: MessageEvent) => {
-      const { songId } = JSON.parse(e.data)
-      setSongs((prev) => prev.filter((s) => s.id !== songId)) // no curly braces it will be returned automatically 
+    newSocket.on("song-added", ({ song }) => {
+      setSongs((prev) => [...prev, song])
     })
 
-    es.onerror = () => {
-      console.warn("SSE error, browser will retry...");
-    };
+    newSocket.on("vote-updated", ({ songId, upvotes, downvotes }) => {
+      setSongs((prev) => prev.map((s) => (s.id === songId ? { ...s, upvotes, downvotes } : s)))
+    })
 
-    return () => es.close();
+    newSocket.on("song-changed", ({ song }) => {
+      setCurrentSong(song)
+      if (song) setSongs(prev => prev.filter(s => s.id !== song.id))
+    })
+
+    newSocket.on("song-deleted", ({ songId }) => {
+      setSongs(prev => prev.filter(s => s.id !== songId))
+    })
+
+    setSocket(newSocket)
+
+    return () => {
+      newSocket.off("add-song")
+      newSocket.off("vote-updated")
+      newSocket.off("song-changed")
+      newSocket.off("song-deleted")
+      newSocket.disconnect()
+    }
   }, [roomId]);
 
   const handleVote = async (formData: FormData) => {

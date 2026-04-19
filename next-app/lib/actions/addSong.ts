@@ -3,7 +3,6 @@ import { z } from "zod";
 import prisma from "../prisma";
 import { auth } from "../auth";
 import { revalidatePath } from "next/cache";
-import { broadcast } from "../sseClient";
 
 const songSchema = z.object({
   url: z.url("please enter valid url").min(1, "URL is required"),
@@ -96,10 +95,36 @@ export async function addSong(prevState_: any, formdata: FormData): Promise<Acti
     isNowCurrent = true
   }
 
-  broadcast(roomId, 'song-added', { song: createdSong })
+  const wsSecret = process.env.WS_SECRET
+  if (wsSecret) {
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'X-API-KEY': wsSecret,
+      },
+      body: JSON.stringify({
+        roomId,
+        event: "song-added",
+        data: { song: createdSong }
+      })
+    }).catch(e => console.error("Broadcast addsong Failed", e))
+  }
+
 
   if (isNowCurrent) {
-    broadcast(roomId, 'song-changed', { song: createdSong })
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'X-API-KEY': wsSecret!,
+      },
+      body: JSON.stringify({
+        roomId,
+        event: "song-changed",
+        data: { song: createdSong }
+      })
+    }).catch(e => console.error("Broadcast song-changed by adding song Failed", e))
   }
 
   revalidatePath(`/rooms/${room.id}`)

@@ -1,6 +1,6 @@
 import express from "express"
 import http from "http"
-import { Server } from "socket.io"
+import { Server as WsServer } from "socket.io"
 import cors from "cors"
 
 const app = express()
@@ -14,14 +14,31 @@ app.use(cors({
   credentials: true
 }))
 
-const io = new Server(server, {
+const io = new WsServer(server, {
   cors: {
     origin: process.env.NEXT_PUBLIC_URL,
     methods: ["GET", "POST"]
   },
 })
 
-io.on("connection", (socket) => {
+const WS_SECRET = process.env.WS_SECRET
+app.post("/broadcast", (req, res) => {
+  const authHeader = req.headers["x-api-key"]
+  if (WS_SECRET !== authHeader) {
+    return res.status(403).json({ error: "unauthorised" })
+  }
+
+  const { roomId, event, data } = req.body
+  if (!roomId || !event) {
+    return res.status(400).json({ error: "missing roomId or event" })
+  }
+
+  io.to(roomId).emit(event, data)
+  console.log(`broadcast ${event} to room ${roomId}`)
+  res.status(200).json({ ok: true })
+})
+
+io.on("connection", async (socket) => {
   console.log("A user connected", socket.id)
 
   socket.on("joinRoom", (roomId) => {
@@ -40,6 +57,7 @@ io.on("connection", (socket) => {
   })
 })
 
-server.listen(4000, () => {
+let port = 4000
+server.listen(port, () => {
   console.log("listening at port 4000")
 })
