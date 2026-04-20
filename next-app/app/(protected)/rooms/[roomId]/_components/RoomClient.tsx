@@ -7,7 +7,7 @@ import { advanceToNextSong } from "@/lib/actions/advanceToNext";
 import { Trash } from "lucide-react";
 import { delteSong } from "@/lib/actions/deleteSong";
 import { deleteRoom } from "@/lib/actions/deleteRoom";
-import { io, Socket } from "socket.io-client";
+import { socket } from "@/lib/socket";
 
 interface Song {
   id: string;
@@ -35,39 +35,30 @@ export function RoomClient({
 
   const [currentSong, setCurrentSong] = useState(initialCurrentSong);
   const [songs, setSongs] = useState(initialSongs);
-  const [socket, setSocket] = useState<Socket | null>(null)
-  console.log("WS URL:", process.env.NEXT_PUBLIC_SOCKET_URL);
-  console.log("WS Secret exists?", process.env.WS_SECRET);
-  useEffect(() => {
-    const newSocket = io(`${process.env.NEXT_PUBLIC_SOCKET_URL}`, {
-      transports: ["websocket"]
-    })
 
-    newSocket.on("song-added", ({ song }) => {
+  useEffect(() => {
+    socket.on("song-added", ({ song }) => {
       setSongs((prev) => [...prev, song])
     })
 
-    newSocket.on("vote-updated", ({ songId, upvotes, downvotes }) => {
-      setSongs((prev) => prev.map((s) => (s.id === songId ? { ...s, upvotes, downvotes } : s)))
+    socket.on("vote-updated", ({ songId, upvotes, downvotes }) => {
+      setSongs((prev) => prev.map(s => s.id === songId ? { ...s, upvotes, downvotes } : s))
     })
 
-    newSocket.on("song-changed", ({ song }) => {
+    socket.on("song-changed", ({ song }) => {
       setCurrentSong(song)
       if (song) setSongs(prev => prev.filter(s => s.id !== song.id))
     })
 
-    newSocket.on("song-deleted", ({ songId }) => {
+    socket.on("song-deleted", ({ songId }) => {
       setSongs(prev => prev.filter(s => s.id !== songId))
     })
 
-    setSocket(newSocket)
-
     return () => {
-      newSocket.off("add-song")
-      newSocket.off("vote-updated")
-      newSocket.off("song-changed")
-      newSocket.off("song-deleted")
-      newSocket.disconnect()
+      socket.off("add-song")
+      socket.off("vote-updated")
+      socket.off("song-changed")
+      socket.off("song-deleted")
     }
   }, [roomId]);
 

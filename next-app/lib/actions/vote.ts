@@ -3,7 +3,6 @@ import z from "zod";
 import { auth } from "../auth";
 import prisma from "../prisma";
 import { revalidatePath } from "next/cache";
-import { broadcast } from "../sseClient";
 
 const voteSchema = z.object({
   songId: z.string(),
@@ -106,7 +105,25 @@ export async function vote(formData: FormData) {
   })
 
   if (song) {
-    broadcast(song.playlist.roomId, 'vote-updated', { songId, upvotes: song.upvotes, downvotes: song.downvotes })
+    let wsSecret = process.env.WS_SECRET
+    if (wsSecret) {
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "Application/json",
+          "x-api-key": wsSecret
+        },
+        body: JSON.stringify({
+          roomId: song.playlist.roomId,
+          event: "vote-updated",
+          data: {
+            songId,
+            upvotes: song.upvotes,
+            downvotes: song.downvotes
+          }
+        })
+      }).catch(e => console.error("Broadcast vote-updated failed", e))
+    }
     revalidatePath(`/rooms/${song.playlist.roomId}`)
   }
 }

@@ -3,7 +3,6 @@ import { auth } from "../auth"
 import z from "zod";
 import prisma from "../prisma";
 import { revalidatePath } from "next/cache";
-import { broadcast } from "../sseClient";
 
 const deleteSchema = z.object({
   songId: z.string()
@@ -56,7 +55,21 @@ export async function delteSong(formData: FormData, roomId: string) {
       }
     })
 
-    broadcast(song.playlist.roomId, "song-deleted", { songId: song.id })
+    const wsSecret = process.env.WS_SECRET
+    if (wsSecret) {
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': "application/json",
+          'X-API-KEY': wsSecret,
+        },
+        body: JSON.stringify({
+          roomId,
+          event: "song-deleted",
+          data: { songId: song.id }
+        })
+      }).catch(e => console.error("Broadcast song-deleted to next Failed", e))
+    }
     revalidatePath(`/rooms/${roomId}`)
     console.log("song delte action")
   }

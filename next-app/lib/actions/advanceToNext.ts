@@ -2,7 +2,6 @@
 import { revalidatePath } from "next/cache";
 import { auth } from "../auth";
 import prisma from "../prisma";
-import { broadcast } from "../sseClient";
 
 export async function advanceToNextSong(roomId: string) {
   const session = await auth()
@@ -43,12 +42,26 @@ export async function advanceToNextSong(roomId: string) {
     ]
   })
 
+  const wsSecret = process.env.WS_SECRET
   if (!nextSong) {
     await prisma.room.update({
       where: { id: roomId },
       data: { currentSongId: null }
     })
-    broadcast(roomId, "song-changed", { song: null })
+    if (wsSecret) {
+      await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+        method: 'POST',
+        headers: {
+          'Content-Type': "application/json",
+          'X-API-KEY': wsSecret,
+        },
+        body: JSON.stringify({
+          roomId,
+          event: "song-changed",
+          data: { song: null }
+        })
+      }).catch(e => console.error("Broadcast song-changed in advance to next Failed", e))
+    }
     revalidatePath(`/rooms/${roomId}`)
     return null
   }
@@ -57,7 +70,22 @@ export async function advanceToNextSong(roomId: string) {
     where: { id: roomId },
     data: { currentSongId: nextSong.id }
   })
-  broadcast(roomId, 'song-changed', { song: nextSong })
+
+
+  if (wsSecret) {
+    await fetch(`${process.env.NEXT_PUBLIC_SOCKET_URL}/broadcast`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': "application/json",
+        'X-API-KEY': wsSecret,
+      },
+      body: JSON.stringify({
+        roomId,
+        event: "song-changed",
+        data: { song: nextSong }
+      })
+    }).catch(e => console.error("Broadcast song-changed in advance to next Failed", e))
+  }
   revalidatePath(`/rooms/${roomId}`)
   return nextSong
 }
