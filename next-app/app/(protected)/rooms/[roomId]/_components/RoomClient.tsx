@@ -95,11 +95,11 @@ export function RoomClient({
         <div>
           <button
             onClick={handleNext}
-            className="bg-green-600 text-white px-4 py-2 rounded cursor-pointer"
+            className="bg-green-600 text-white px-4 py-2 cursor-pointer rounded-lg"
           >
             Next Song
           </button>
-          <button onClick={handleRoomDelete} className="bg-red-300 text-white mx-4 px-4 py-2 rounded">DeleteRoom</button>
+          <button onClick={handleRoomDelete} className="bg-red-600 text-white mx-4 px-4 py-2 rounded-lg cursor-pointer">DeleteRoom</button>
         </div>
       )}
 
