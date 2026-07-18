@@ -72,7 +72,7 @@ export function Chat({
         />
         <button
           onClick={sendMessage}
-          className="rounded-full bg-gradient-to-r from-purple-600 to-violet-700 p-2 text-white hover:from-purple-500 hover:to-violet-600 transition"
+          className="rounded-full bg-gradient-to-r from-purple-600 to-violet-700 p-2 text-white hover:from-purple-500 hover:to-violet-600 transition cursor-pointer"
         >
           <Send className="h-4 w-4" />
         </button>

@@ -136,7 +136,7 @@ export function RoomClient({
                     <input type="hidden" name="value" value="up" />
                     <button
                       type="submit"
-                      className="px-2 py-1 bg-green-100 rounded hover:bg-green-200"
+                      className="px-2 py-1 bg-green-100 rounded hover:bg-green-200 cursor-pointer"
                     >
                       👍
                     </button>
@@ -146,7 +146,7 @@ export function RoomClient({
                     <input type="hidden" name="value" value="down" />
                     <button
                       type="submit"
-                      className="px-2 py-1 bg-red-100 rounded hover:bg-red-200"
+                      className="px-2 py-1 bg-red-100 rounded hover:bg-red-200 cursor-pointer"
                     >
                       👎
                     </button>
@@ -154,7 +154,7 @@ export function RoomClient({
                 </div>
 
                 {isAdmin &&
-                  <div>
+                  <div className="cursor-pointer">
                     <form action={handleSongDelete}>
                       <button type="submit">
                         <input type="hidden" name="songId" value={song.id} />
