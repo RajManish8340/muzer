@@ -231,29 +231,11 @@ export default async function Home() {
         </div>
       </section>
 
-      {/* CTA Section */}
-      <section className="relative px-4 py-20 sm:px-6 sm:py-32 lg:px-8 border-t border-purple-900/30 z-10">
-        <div className="absolute inset-0 -z-10">
-          <div className="absolute right-1/4 top-0 h-72 w-72 rounded-full bg-violet-600/20 blur-3xl" />
-        </div>
-        <div className="mx-auto max-w-3xl text-center">
-          <h2 className="mb-6 text-3xl font-bold text-white sm:text-4xl">
-            Ready to start your watch party?
-          </h2>
-          <p className="mb-10 text-lg text-purple-200/70">
-            Create a room and invite friends in seconds. No setup required.
-          </p>
-          <Link href="/login" className="inline-flex items-center justify-center rounded-full bg-gradient-to-r from-purple-600 to-violet-700 px-8 py-4 font-semibold text-white hover:from-purple-500 hover:to-violet-600 transition-all duration-300 group hover:scale-105 shadow-lg shadow-purple-500/50">
-            Create Your First Room
-            <Play className="ml-2 h-5 w-5 group-hover:translate-x-0.5 transition-transform" fill="white" />
-          </Link>
-        </div>
-      </section>
 
       {/* Footer */}
       <footer className="border-t border-purple-900/30 px-4 py-12 sm:px-6 lg:px-8 relative z-10">
         <div className="mx-auto max-w-6xl">
-          <div className="mb-8 grid gap-8 sm:grid-cols-3">
+          <div className="mb-8  gap-8 flex justify-between ">
             <div>
               <div className="flex items-center gap-2 mb-4">
                 <div className="flex h-8 w-8 items-center justify-center rounded-lg bg-gradient-to-br from-purple-600 to-violet-700 shadow-lg shadow-purple-500/50">
@@ -266,39 +248,29 @@ export default async function Home() {
               </p>
             </div>
             <div>
-              <h4 className="mb-4 font-semibold text-white">Product</h4>
-              <ul className="space-y-2 text-sm text-purple-200/60">
-                <li><Link href="#features" className="hover:text-purple-200 transition-colors">Features</Link></li>
-                <li><Link href="#" className="hover:text-purple-200 transition-colors">Pricing</Link></li>
-                <li><Link href="#" className="hover:text-purple-200 transition-colors">Security</Link></li>
-              </ul>
-            </div>
-            <div>
               <h4 className="mb-4 font-semibold text-white">Connect</h4>
               <div className="flex gap-4">
-                <a href="#" className="text-purple-200/60 hover:text-purple-200 transition-colors">
+                <Link
+                  href="https://github.com/RajManish8340/muzer"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="text-purple-200/60 hover:text-purple-200 transition-colors"
+                >
                   <Code className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-purple-200/60 hover:text-purple-200 transition-colors">
+                </Link>
+                <Link href="https://x.com/RajMs_twt"
+                  target='_blank'
+                  rel='noopener noreferrer'
+                  className="text-purple-200/60 hover:text-purple-200 transition-colors">
                   <MessageCircle className="h-5 w-5" />
-                </a>
-                <a href="#" className="text-purple-200/60 hover:text-purple-200 transition-colors">
+                </Link>
+                <Link href="mailto:rajmanishsahu8340@gmail.com" className="text-purple-200/60 hover:text-purple-200 transition-colors">
                   <Mail className="h-5 w-5" />
-                </a>
+                </Link>
               </div>
             </div>
           </div>
 
-          <div className="border-t border-purple-900/30 pt-8">
-            <div className="flex flex-col sm:flex-row justify-between items-center gap-4 text-sm text-purple-200/60">
-              <p>&copy; 2024 Muzer. All rights reserved.</p>
-              <div className="flex gap-6">
-                <Link href="#" className="hover:text-purple-200 transition-colors">Privacy</Link>
-                <Link href="#" className="hover:text-purple-200 transition-colors">Terms</Link>
-                <Link href="#" className="hover:text-purple-200 transition-colors">Contact</Link>
-              </div>
-            </div>
-          </div>
         </div>
       </footer>
     </div>
